@@ -79,7 +79,7 @@ export default function Navbar() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full glass border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <header className="sticky top-0 z-50 w-full bg-white/98 dark:bg-slate-900/98 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-sm transition-colors">
       {/* DaisyUI Drawer Component for Mobile Navigation */}
       <div className="drawer">
         <input

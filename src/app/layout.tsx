@@ -37,7 +37,7 @@ export default function RootLayout({
                 },
               }}
             />
-            <Suspense fallback={<div className="h-20 w-full glass border-b border-slate-200 dark:border-slate-800" />}>
+            <Suspense fallback={<div className="h-20 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" />}>
               <Navbar />
             </Suspense>
             <main className="flex-1">{children}</main>
