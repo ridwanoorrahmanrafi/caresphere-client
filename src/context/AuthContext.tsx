@@ -20,7 +20,12 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
-  register: (name: string, email: string, photoURL: string, password: string) => Promise<{ success: boolean; message: string }>;
+  register: (
+    name: string,
+    email: string,
+    photoURL: string,
+    password: string
+  ) => Promise<{ success: boolean; message: string }>;
   googleLogin: () => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   updateUserProfile: (name: string, photoURL?: string) => Promise<{ success: boolean; message: string }>;
@@ -36,16 +41,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Sync session across Firebase Auth and LocalStorage/Backend
   useEffect(() => {
-    const hasFirebase = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!auth;
-
-    if (hasFirebase && auth) {
+    if (auth) {
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
         if (firebaseUser && firebaseUser.email) {
           const userObj: User = {
             id: firebaseUser.uid,
             name: firebaseUser.displayName || "Volunteer",
             email: firebaseUser.email,
-            photoURL: firebaseUser.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
+            photoURL:
+              firebaseUser.photoURL ||
+              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
           };
 
           const idToken = await firebaseUser.getIdToken();
@@ -53,12 +58,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(userObj);
           localStorage.setItem("caresphere_token", idToken);
           localStorage.setItem("caresphere_user", JSON.stringify(userObj));
+
+          // Sync with backend database and get backend JWT token
+          try {
+            const res = await fetch(`${API_BASE_URL}/auth/google`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(userObj),
+            });
+            const data = await res.json();
+            if (data.success && data.token) {
+              setToken(data.token);
+              localStorage.setItem("caresphere_token", data.token);
+              if (data.user) {
+                setUser(data.user);
+                localStorage.setItem("caresphere_user", JSON.stringify(data.user));
+              }
+            }
+          } catch (syncErr) {
+            console.warn("Backend session sync note:", syncErr);
+          }
         } else {
+          // Fallback to localStorage session if not signed in with Firebase
           const storedToken = localStorage.getItem("caresphere_token");
           const storedUser = localStorage.getItem("caresphere_user");
           if (storedToken && storedUser) {
-            setToken(storedToken);
-            setUser(JSON.parse(storedUser));
+            try {
+              setToken(storedToken);
+              setUser(JSON.parse(storedUser));
+            } catch {
+              setUser(null);
+              setToken(null);
+            }
           } else {
             setUser(null);
             setToken(null);
@@ -69,6 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return () => unsubscribe();
     } else {
+      // LocalStorage restoration when Firebase is offline
       try {
         const storedToken = localStorage.getItem("caresphere_token");
         const storedUser = localStorage.getItem("caresphere_user");
@@ -98,9 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const hasFirebase = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!auth;
-
-    if (hasFirebase && auth) {
+    if (auth) {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const fbUser = userCredential.user;
@@ -110,7 +140,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: fbUser.uid,
           name: fbUser.displayName || "Volunteer",
           email: fbUser.email || email,
-          photoURL: fbUser.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
+          photoURL:
+            fbUser.photoURL ||
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
         };
 
         setUser(userObj);
@@ -118,17 +150,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem("caresphere_token", idToken);
         localStorage.setItem("caresphere_user", JSON.stringify(userObj));
 
+        // Sync with backend
         try {
-          await fetch(`${API_BASE_URL}/auth/google`, {
+          const res = await fetch(`${API_BASE_URL}/auth/google`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userObj),
           });
+          const data = await res.json();
+          if (data.success && data.token) {
+            setToken(data.token);
+            localStorage.setItem("caresphere_token", data.token);
+            if (data.user) {
+              setUser(data.user);
+              localStorage.setItem("caresphere_user", JSON.stringify(data.user));
+            }
+          }
         } catch {}
 
-        return { success: true, message: "Logged in successfully with Firebase!" };
+        return { success: true, message: "Logged in successfully!" };
       } catch (error: any) {
-        return { success: false, message: error.message || "Invalid email or password." };
+        // Fallback to backend email/password login if Firebase user does not exist
       }
     }
 
@@ -147,7 +189,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem("caresphere_user", JSON.stringify(data.user));
         return { success: true, message: data.message || "Logged in successfully!" };
       } else {
-        return { success: false, message: data.message || "Login failed" };
+        return { success: false, message: data.message || "Invalid email or password." };
       }
     } catch (error: any) {
       return { success: false, message: error.message || "Network error. Please try again." };
@@ -155,16 +197,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (name: string, email: string, photoURL: string, password: string) => {
-    const hasFirebase = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!auth;
-
-    if (hasFirebase && auth) {
+    if (auth) {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const fbUser = userCredential.user;
 
         await updateProfile(fbUser, {
           displayName: name,
-          photoURL: photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
+          photoURL:
+            photoURL ||
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
         });
 
         const idToken = await fbUser.getIdToken();
@@ -172,7 +214,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: fbUser.uid,
           name,
           email,
-          photoURL: photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
+          photoURL:
+            photoURL ||
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
         };
 
         setUser(userObj);
@@ -180,17 +224,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem("caresphere_token", idToken);
         localStorage.setItem("caresphere_user", JSON.stringify(userObj));
 
+        // Sync with backend MongoDB
         try {
-          await fetch(`${API_BASE_URL}/auth/google`, {
+          const res = await fetch(`${API_BASE_URL}/auth/google`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userObj),
           });
+          const data = await res.json();
+          if (data.success && data.token) {
+            setToken(data.token);
+            localStorage.setItem("caresphere_token", data.token);
+            if (data.user) {
+              setUser(data.user);
+              localStorage.setItem("caresphere_user", JSON.stringify(data.user));
+            }
+          }
         } catch {}
 
-        return { success: true, message: "Registered successfully with Firebase!" };
+        return { success: true, message: "Account created successfully!" };
       } catch (error: any) {
-        return { success: false, message: error.message || "Registration failed" };
+        // Fall through to backend registration if Firebase rejects or is email-in-use
       }
     }
 
@@ -209,7 +263,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem("caresphere_user", JSON.stringify(data.user));
         return { success: true, message: data.message || "Registration successful!" };
       } else {
-        return { success: false, message: data.message || "Registration failed" };
+        return { success: false, message: data.message || "Registration failed." };
       }
     } catch (error: any) {
       return { success: false, message: error.message || "Network error. Please try again." };
@@ -217,65 +271,67 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const googleLogin = async () => {
-    const hasFirebase = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !!auth;
-
-    if (hasFirebase && auth) {
-      try {
-        const result = await signInWithPopup(auth, googleProvider);
-        const fbUser = result.user;
-        const idToken = await fbUser.getIdToken();
-
-        const userObj: User = {
-          id: fbUser.uid,
-          name: fbUser.displayName || "Volunteer",
-          email: fbUser.email || "",
-          photoURL: fbUser.photoURL || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80",
-        };
-
-        setUser(userObj);
-        setToken(idToken);
-        localStorage.setItem("caresphere_token", idToken);
-        localStorage.setItem("caresphere_user", JSON.stringify(userObj));
-
-        try {
-          await fetch(`${API_BASE_URL}/auth/google`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userObj),
-          });
-        } catch {}
-
-        return { success: true, message: "Signed in with Google successfully!" };
-      } catch (error: any) {
-        return { success: false, message: error.message || "Google sign-in failed." };
-      }
-    }
-
     try {
-      const defaultProfile = {
-        name: "Ayman Sadiq",
-        email: "ayman.sadiq@gmail.com",
-        photoURL: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80",
+      if (!auth) {
+        throw new Error("Firebase Authentication is not available.");
+      }
+
+      googleProvider.setCustomParameters({ prompt: "select_account" });
+      const result = await signInWithPopup(auth, googleProvider);
+      const fbUser = result.user;
+      const idToken = await fbUser.getIdToken();
+
+      const userObj: User = {
+        id: fbUser.uid,
+        name: fbUser.displayName || "Volunteer",
+        email: fbUser.email || "",
+        photoURL:
+          fbUser.photoURL ||
+          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80",
       };
 
-      const res = await fetch(`${API_BASE_URL}/auth/google`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(defaultProfile),
-      });
-      const data = await res.json();
+      setUser(userObj);
+      setToken(idToken);
+      localStorage.setItem("caresphere_token", idToken);
+      localStorage.setItem("caresphere_user", JSON.stringify(userObj));
 
-      if (data.success) {
-        setToken(data.token);
-        setUser(data.user);
-        localStorage.setItem("caresphere_token", data.token);
-        localStorage.setItem("caresphere_user", JSON.stringify(data.user));
-        return { success: true, message: data.message || "Google login successful!" };
-      } else {
-        return { success: false, message: data.message || "Google login failed" };
+      // Persist Google profile in MongoDB Atlas & obtain backend token
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userObj),
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          setToken(data.token);
+          localStorage.setItem("caresphere_token", data.token);
+          if (data.user) {
+            setUser(data.user);
+            localStorage.setItem("caresphere_user", JSON.stringify(data.user));
+          }
+        }
+      } catch (backendSyncErr) {
+        console.warn("Backend Google login sync note:", backendSyncErr);
       }
+
+      return { success: true, message: "Signed in with Google successfully!" };
     } catch (error: any) {
-      return { success: false, message: error.message || "Network error during Google login." };
+      console.error("Google sign-in error:", error);
+      let userFriendlyMessage = error.message || "Google sign-in failed.";
+
+      if (error.code === "auth/popup-closed-by-user") {
+        userFriendlyMessage = "Sign-in popup was closed before completing.";
+      } else if (error.code === "auth/unauthorized-domain") {
+        userFriendlyMessage =
+          "Domain not authorized in Firebase Console. Add this domain to Authentication > Settings > Authorized domains.";
+      } else if (error.code === "auth/popup-blocked") {
+        userFriendlyMessage = "Sign-in popup was blocked by browser. Please allow popups for this site.";
+      } else if (error.code === "auth/cancelled-popup-request") {
+        userFriendlyMessage = "Popup sign-in was cancelled.";
+      }
+
+      return { success: false, message: userFriendlyMessage };
     }
   };
 
