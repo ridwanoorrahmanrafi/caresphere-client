@@ -391,7 +391,7 @@ export default function ManageEventsPage() {
               {/* Desktop Table View (Hidden on screens < md) */}
               <div className="overflow-x-auto hidden md:block">
                 <table className="table table-zebra table-md w-full">
-                  <thead className="bg-slate-50/80 dark:bg-slate-850/80 text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                  <thead className="bg-slate-50/80 dark:bg-slate-800/40 text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-800">
                     <tr>
                       <th>Event</th>
                       <th>Type</th>

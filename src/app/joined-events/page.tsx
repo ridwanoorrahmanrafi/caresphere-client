@@ -213,7 +213,7 @@ export default function JoinedEventsPage() {
           viewMode === "list" ? (
             /* List View */
             <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
-              <div className="p-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between bg-slate-50/60 dark:bg-slate-850/60">
+              <div className="p-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between bg-slate-50/60 dark:bg-slate-800/40">
                 <span>My Volunteer Commitments ({filteredJoinedEvents.length})</span>
                 <span className="text-[11px] font-normal normal-case text-slate-500">
                   Sorted by upcoming event date

@@ -21,7 +21,8 @@ const statsData: StatItem[] = [
     label: "Active Volunteers",
     subtext: "Across 18 districts in Bangladesh",
     badge: "↗ +18% this month",
-    badgeType: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60",
+    badgeType:
+      "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60",
     iconBg: "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/50 dark:border-emerald-800/50",
     iconColor: "text-emerald-600 dark:text-emerald-400",
     progressValue: 92,
@@ -33,7 +34,8 @@ const statsData: StatItem[] = [
     label: "Warm Garments",
     subtext: "Distributed in cold-wave zones",
     badge: "Seasonal Peak",
-    badgeType: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60",
+    badgeType:
+      "text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60",
     iconBg: "bg-amber-50 dark:bg-amber-950/60 border-amber-200/50 dark:border-amber-800/50",
     iconColor: "text-amber-600 dark:text-amber-400",
     progressValue: 75,
@@ -45,7 +47,8 @@ const statsData: StatItem[] = [
     label: "Saplings Planted",
     subtext: "Restoring urban biodiversity",
     badge: "Green Initiative",
-    badgeType: "text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/60",
+    badgeType:
+      "text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-200/60 dark:border-teal-800/60",
     iconBg: "bg-teal-50 dark:bg-teal-950/60 border-teal-200/50 dark:border-teal-800/50",
     iconColor: "text-teal-600 dark:text-teal-400",
     progressValue: 82,
@@ -57,7 +60,8 @@ const statsData: StatItem[] = [
     label: "Event Success Rate",
     subtext: "Grassroots audited milestones",
     badge: "Verified Impact",
-    badgeType: "text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60",
+    badgeType:
+      "text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60",
     iconBg: "bg-sky-50 dark:bg-sky-950/60 border-sky-200/50 dark:border-sky-800/50",
     iconColor: "text-sky-600 dark:text-sky-400",
     progressValue: 99,
@@ -85,12 +89,15 @@ export default function ImpactStats() {
         </p>
       </div>
 
-      {/* DaisyUI Stat Component */}
-      <div className="stats stats-vertical lg:stats-horizontal shadow-xl w-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-3xl overflow-hidden">
+      {/* DaisyUI Stat Component with Theme-Adaptive Hover Matrix */}
+      <div className="stats stats-vertical lg:stats-horizontal shadow-xl w-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-3xl overflow-hidden transition-colors">
         {statsData.map((s, i) => {
           const Icon = s.icon;
           return (
-            <div key={i} className="stat p-6 sm:p-7 hover:bg-slate-50/70 dark:hover:bg-slate-850/50 transition-colors">
+            <div
+              key={i}
+              className="stat p-6 sm:p-7 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors duration-200"
+            >
               <div className="stat-figure">
                 <div
                   className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${s.iconBg} ${s.iconColor} shadow-sm`}
@@ -110,16 +117,16 @@ export default function ImpactStats() {
                 </span>
                 {s.badge && (
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold w-max ${s.badgeType}`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold w-max shadow-2xs ${s.badgeType}`}
                   >
                     {s.badge}
                   </span>
                 )}
                 {/* DaisyUI Progress Component Primitives */}
                 <div className="pt-2 mt-0.5 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                  <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 dark:text-slate-500">
                     <span>Target Progress</span>
-                    <span>{s.progressValue}%</span>
+                    <span className="font-bold text-slate-700 dark:text-slate-300">{s.progressValue}%</span>
                   </div>
                   <progress
                     className={`progress ${s.progressColor} w-full h-1.5`}

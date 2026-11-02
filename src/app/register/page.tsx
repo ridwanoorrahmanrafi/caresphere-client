@@ -351,7 +351,7 @@ export default function RegisterPage() {
             onClick={handleGoogleLogin}
             disabled={googleSubmitting}
             type="button"
-            className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 transition-all text-sm font-semibold shadow-sm hover:shadow hover:-translate-y-0.5 cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-semibold shadow-sm hover:shadow hover:-translate-y-0.5 cursor-pointer"
           >
             {googleSubmitting ? (
               <span className="loading loading-spinner loading-xs text-primary"></span>

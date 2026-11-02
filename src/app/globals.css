@@ -39,14 +39,6 @@
   html.dark h4 {
     color: #f8fafc;
   }
-
-  html.dark .text-slate-900 {
-    color: #f8fafc;
-  }
-
-  html.dark .text-slate-600 {
-    color: #cbd5e1;
-  }
 }
 
 /* Hide scrollbar for clean horizontal swipe on mobile */
