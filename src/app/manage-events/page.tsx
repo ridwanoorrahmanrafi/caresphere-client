@@ -21,6 +21,7 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { API_BASE_URL } from "@/config/api";
+import { compressImage } from "@/utils/imageCompression";
 
 const EVENT_TYPES = [
   "Donation Drive",
@@ -118,21 +119,20 @@ export default function ManageEventsPage() {
   }, [editingEvent]);
 
   // Handle Update Submit
-  const handleEditThumbnailFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditThumbnailFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("File size exceeds 2MB limit.");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size exceeds 10MB limit.");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setEditThumbnail(reader.result);
-        toast.success("Updated banner image loaded!");
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressedDataUrl = await compressImage(file, 1200, 800, 0.82);
+      setEditThumbnail(compressedDataUrl);
+      toast.success("Updated banner image loaded and optimized!");
+    } catch {
+      toast.error("Failed to process image file.");
+    }
   };
 
   const handleUpdate = async (e: React.FormEvent) => {

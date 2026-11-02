@@ -464,7 +464,7 @@ export default function EventDetailsPage() {
                   {attendees.map((attendee, idx) => (
                     <div
                       key={idx}
-                      className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center gap-3"
+                      className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800 shadow-sm flex items-center gap-3 hover:border-emerald-500/40 transition-colors"
                     >
                       <div className="avatar">
                         <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-emerald-500/20 shrink-0">
@@ -482,7 +482,7 @@ export default function EventDetailsPage() {
                         <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
                           {attendee.userName}
                         </p>
-                        <p className="text-[10px] text-slate-400 truncate">{attendee.userEmail}</p>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{attendee.userEmail}</p>
                       </div>
                     </div>
                   ))}

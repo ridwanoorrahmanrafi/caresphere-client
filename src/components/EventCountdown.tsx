@@ -76,65 +76,69 @@ export default function EventCountdown({
       {/* DaisyUI Countdown in Boxes with Labels Under */}
       <div className="grid grid-flow-col gap-2.5 sm:gap-3 text-center auto-cols-fr">
         {/* Days */}
-        <div className="flex flex-col p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
-          <span className="font-mono text-2xl sm:text-3xl font-black countdown text-emerald-600 dark:text-emerald-400 justify-center">
+        <div className="flex flex-col items-center justify-center p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
+          <span className="font-mono text-2xl sm:text-3xl font-black countdown text-emerald-600 dark:text-emerald-400 justify-center leading-none">
             <span
               style={{ "--value": Math.min(99, timeLeft.days) } as React.CSSProperties}
               aria-live="polite"
               aria-label={`${timeLeft.days}`}
+              className="min-w-[2ch]"
             >
               {timeLeft.days}
             </span>
           </span>
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1.5">
             days
           </span>
         </div>
 
         {/* Hours */}
-        <div className="flex flex-col p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
-          <span className="font-mono text-2xl sm:text-3xl font-black countdown text-emerald-600 dark:text-emerald-400 justify-center">
+        <div className="flex flex-col items-center justify-center p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
+          <span className="font-mono text-2xl sm:text-3xl font-black countdown text-emerald-600 dark:text-emerald-400 justify-center leading-none">
             <span
               style={{ "--value": timeLeft.hours } as React.CSSProperties}
               aria-live="polite"
               aria-label={`${timeLeft.hours}`}
+              className="min-w-[2ch]"
             >
               {timeLeft.hours}
             </span>
           </span>
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1.5">
             hours
           </span>
         </div>
 
         {/* Minutes */}
-        <div className="flex flex-col p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
-          <span className="font-mono text-2xl sm:text-3xl font-black countdown text-emerald-600 dark:text-emerald-400 justify-center">
+        <div className="flex flex-col items-center justify-center p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
+          <span className="font-mono text-2xl sm:text-3xl font-black countdown text-emerald-600 dark:text-emerald-400 justify-center leading-none">
             <span
               style={{ "--value": timeLeft.minutes } as React.CSSProperties}
               aria-live="polite"
               aria-label={`${timeLeft.minutes}`}
+              className="min-w-[2ch]"
             >
               {timeLeft.minutes}
             </span>
           </span>
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1.5">
             min
           </span>
         </div>
 
         {/* Seconds */}
-        <div className="flex flex-col p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
-          <span className="font-mono text-2xl sm:text-3xl font-black countdown text-emerald-600 dark:text-emerald-400 justify-center">
+        <div className="flex flex-col items-center justify-center p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
+          <span className="font-mono text-2xl sm:text-3xl font-black countdown text-emerald-600 dark:text-emerald-400 justify-center leading-none">
             <span
               style={{ "--value": timeLeft.seconds } as React.CSSProperties}
               aria-live="polite"
               aria-label={`${timeLeft.seconds}`}
+              className="min-w-[2ch]"
             >
               {timeLeft.seconds}
             </span>
           </span>
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1.5">
             sec
           </span>
         </div>

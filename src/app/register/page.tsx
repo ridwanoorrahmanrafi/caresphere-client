@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
+import { compressImage } from "@/utils/imageCompression";
 import {
   User as UserIcon,
   Mail,
@@ -92,21 +93,20 @@ export default function RegisterPage() {
     }
   };
 
-  const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("File size exceeds 2MB limit.");
+    if (file.size > 8 * 1024 * 1024) {
+      toast.error("File size exceeds 8MB limit.");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setPhotoURL(reader.result);
-        toast.success("Profile photo uploaded!");
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressedDataUrl = await compressImage(file, 400, 400, 0.85);
+      setPhotoURL(compressedDataUrl);
+      toast.success("Profile photo uploaded!");
+    } catch {
+      toast.error("Failed to process image file.");
+    }
   };
 
   const handleGoogleLogin = async () => {

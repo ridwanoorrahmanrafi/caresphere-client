@@ -5,17 +5,24 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
-import { Mail, Lock, LogIn, HeartHandshake, ArrowRight, ShieldCheck, KeyRound, Sparkles } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  LogIn,
+  HeartHandshake,
+  ArrowRight,
+  Sparkles,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 export default function LoginPage() {
   const { user, login, googleLogin } = useAuth();
   const router = useRouter();
 
-  const [loginMethod, setLoginMethod] = useState<"password" | "otp">("password");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpJoined, setOtpJoined] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
@@ -29,14 +36,14 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !password) {
+    if (!email.trim() || !password) {
       toast.error("Please fill in both email and password.");
       return;
     }
 
     try {
       setSubmitting(true);
-      const res = await login(email, password);
+      const res = await login(email.trim(), password);
 
       if (res.success) {
         toast.success(res.message || "Logged in successfully!");
@@ -46,32 +53,6 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       toast.error(err.message || "Something went wrong during login.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleOtpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email.trim()) {
-      toast.error("Please enter your registered email address.");
-      return;
-    }
-
-    if (otp.length !== 6) {
-      toast.error("Please enter the complete 6-digit verification code.");
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      // Simulate 2FA / OTP verification
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      toast.success("Two-Factor Authentication verified! Signing you in...");
-      router.push("/");
-    } catch {
-      toast.error("OTP verification failed. Please check the code and try again.");
     } finally {
       setSubmitting(false);
     }
@@ -113,7 +94,7 @@ export default function LoginPage() {
 
           <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
             <div className="p-4 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 backdrop-blur-sm">
-              <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">12.5k+</p>
+              <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">14.8k+</p>
               <p className="text-xs text-slate-500 font-medium">Volunteers Mobilized</p>
             </div>
             <div className="p-4 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 backdrop-blur-sm">
@@ -124,7 +105,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form Card Container */}
-        <div className="card w-full max-w-md shrink-0 bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl space-y-8">
+        <div className="card w-full max-w-md shrink-0 bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6">
           {/* Header */}
           <div className="text-center space-y-2">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white mx-auto shadow-md shadow-emerald-500/25">
@@ -138,118 +119,79 @@ export default function LoginPage() {
             </p>
           </div>
 
-        {/* DaisyUI Alert Component: Quick Access Notice */}
-        <div role="alert" className="alert alert-info alert-soft text-xs py-2.5 px-3.5">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-4 h-4 text-sky-500">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>
-            <strong>Quick Access:</strong> Sign in with password, or use 6-digit OTP verification code.
-          </span>
-        </div>
-
-        {/* DaisyUI Tabs for Authentication Method */}
-        <div className="tabs tabs-box bg-slate-100 dark:bg-slate-800/60 p-1 rounded-2xl grid grid-cols-2">
-          <button
-            type="button"
-            onClick={() => setLoginMethod("password")}
-            className={`tab rounded-xl text-xs font-semibold py-2 transition-all cursor-pointer ${
-              loginMethod === "password"
-                ? "tab-active bg-white dark:bg-slate-900 shadow-sm text-emerald-600 dark:text-emerald-400"
-                : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-            }`}
-          >
-            Password Login
-          </button>
-          <button
-            type="button"
-            onClick={() => setLoginMethod("otp")}
-            className={`tab rounded-xl text-xs font-semibold py-2 transition-all cursor-pointer ${
-              loginMethod === "otp"
-                ? "tab-active bg-white dark:bg-slate-900 shadow-sm text-emerald-600 dark:text-emerald-400"
-                : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-            }`}
-          >
-            One-Time Password (OTP)
-          </button>
-        </div>
-
-        {loginMethod === "password" ? (
-          /* Email/Password Form with DaisyUI Fieldset Component */
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <fieldset className="fieldset bg-slate-50/50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl p-4 gap-4">
-              <legend className="fieldset-legend text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Account Credentials
-              </legend>
-
-              {/* Email field with DaisyUI Input Wrapper & Validator */}
-              <div className="space-y-1">
-                <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  Email Address
-                </span>
-                <label className="input input-md input-primary validator w-full">
-                  <Mail className="w-4 h-4 opacity-50 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@example.com"
-                    className="grow"
-                  />
-                </label>
-                <div className="validator-hint hidden">Please enter a valid email address (e.g. name@example.com)</div>
-              </div>
-
-              {/* Password field with DaisyUI Input Wrapper & Validator */}
-              <div className="space-y-1">
-                <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  Password
-                </span>
-                <label className="input input-md input-primary validator w-full">
-                  <Lock className="w-4 h-4 opacity-50 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  <input
-                    type="password"
-                    required
-                    minLength={6}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="grow"
-                  />
-                </label>
-                <div className="validator-hint hidden">Password must be at least 6 characters</div>
-              </div>
-
-              <p className="label text-[11px] text-slate-500 dark:text-slate-400">
-                Sign in with your registered volunteer credentials to access CareSphere.
-              </p>
-            </fieldset>
-
-            {/* Remember Me Option (DaisyUI Checkbox Component) */}
-            <div className="flex items-center justify-between text-xs">
-              <label className="label cursor-pointer flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="checkbox checkbox-primary checkbox-sm"
-                />
-                <span>Remember me on this device</span>
+          {/* Email/Password Form (Specification Requirement 1) */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* 1. Email field */}
+            <div className="space-y-1.5">
+              <label
+                htmlFor="login-email"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+              >
+                Email Address
               </label>
-              <span className="text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer">
-                Forgot password?
-              </span>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <input
+                  id="login-email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all shadow-sm"
+                />
+              </div>
+            </div>
+
+            {/* 2. Password field */}
+            <div className="space-y-1.5">
+              <label
+                htmlFor="login-password"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <input
+                  id="login-password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all shadow-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-60 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-60 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer mt-2"
             >
               {submitting ? (
                 <>
-                  <span className="loading loading-spinner loading-xs"></span>
+                  <span className="loading loading-spinner loading-xs" />
                   <span>Signing in...</span>
                 </>
               ) : (
@@ -260,155 +202,58 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-        ) : (
-          /* OTP Form with DaisyUI OTP Component */
-          <form onSubmit={handleOtpSubmit} className="space-y-5">
-            <fieldset className="fieldset bg-slate-50/50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl p-4 sm:p-5 gap-4">
-              <legend className="fieldset-legend text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Two-Factor Security Verification
-              </legend>
 
-              <div className="space-y-1">
-                <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  Registered Email Address
-                </span>
-                <label className="input input-md input-primary validator w-full">
-                  <Mail className="w-4 h-4 opacity-50 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@example.com"
-                    className="grow"
-                  />
-                </label>
-              </div>
+          {/* Divider */}
+          <div className="divider text-xs uppercase tracking-wider text-slate-400 font-semibold my-2">
+            Or continue with
+          </div>
 
-              {/* DaisyUI OTP Component Section */}
-              <div className="space-y-3 pt-1 text-center">
-                <div className="flex items-center justify-between text-xs px-1">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                    <KeyRound className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Enter 6-digit OTP Code</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setOtpJoined(!otpJoined)}
-                    className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
-                  >
-                    {otpJoined ? "Separate boxes" : "Joined boxes"}
-                  </button>
-                </div>
-
-                {/* DaisyUI OTP Component */}
-                <div className="flex justify-center py-2 overflow-x-auto">
-                  <label className={`otp otp-md otp-primary ${otpJoined ? "otp-joined" : ""}`}>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <input
-                      type="text"
-                      autoComplete="one-time-code"
-                      inputMode="numeric"
-                      maxLength={6}
-                      pattern="[0-9]{6}"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      required
-                      placeholder=""
-                    />
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between text-[11px] text-slate-400 px-1 pt-1">
-                  <span>Code expires in 5:00</span>
-                  <button
-                    type="button"
-                    onClick={() => toast.success("New 6-digit OTP sent to your email!")}
-                    className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer"
-                  >
-                    Resend Code
-                  </button>
-                </div>
-              </div>
-            </fieldset>
-
-            {/* OTP Submit Button */}
+          {/* 3. Google Sign-In Button (Specification Requirement 3) */}
+          <div>
             <button
-              type="submit"
-              disabled={submitting || otp.length < 6}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-50 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
+              onClick={handleGoogleLogin}
+              disabled={googleSubmitting}
+              type="button"
+              className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-semibold shadow-sm hover:shadow hover:-translate-y-0.5 cursor-pointer"
             >
-              {submitting ? (
-                <>
-                  <span className="loading loading-spinner loading-xs" />
-                  <span>Verifying Code...</span>
-                </>
+              {googleSubmitting ? (
+                <span className="loading loading-spinner loading-xs text-primary" />
               ) : (
-                <>
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Verify OTP & Sign In</span>
-                </>
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.87c2.26-2.09 3.67-5.17 3.67-9.15z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.87-3.05c-1.08.72-2.45 1.16-4.06 1.16-3.13 0-5.78-2.11-6.73-4.96H1.27v3.15C3.25 21.36 7.31 24 12 24z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.27C.46 8.23 0 10.06 0 12s.46 3.77 1.27 5.39l4-3.15z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.27 6.61l4 3.15c.95-2.85 3.6-4.96 6.73-4.96z"
+                  />
+                </svg>
               )}
+              <span>Continue with Google</span>
             </button>
-          </form>
-        )}
+          </div>
 
-        {/* DaisyUI Divider Component */}
-        <div className="divider text-xs uppercase tracking-wider text-slate-400 font-semibold my-2">
-          Or continue with
+          {/* 4. Link that redirects to Register page (Specification Requirement 4) */}
+          <p className="text-center text-sm text-slate-500 dark:text-slate-400 pt-2">
+            Don&apos;t have an account yet?{" "}
+            <Link
+              href="/register"
+              className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-bold inline-flex items-center gap-1 hover:underline"
+            >
+              <span>Register here</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </p>
         </div>
-
-        {/* Google Login Button */}
-        <div>
-          <button
-            onClick={handleGoogleLogin}
-            disabled={googleSubmitting}
-            type="button"
-            className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-semibold shadow-sm hover:shadow hover:-translate-y-0.5 cursor-pointer"
-          >
-            {googleSubmitting ? (
-              <span className="loading loading-spinner loading-xs text-primary"></span>
-            ) : (
-              <svg className="w-4 h-4" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.87c2.26-2.09 3.67-5.17 3.67-9.15z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.87-3.05c-1.08.72-2.45 1.16-4.06 1.16-3.13 0-5.78-2.11-6.73-4.96H1.27v3.15C3.25 21.36 7.31 24 12 24z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.27C.46 8.23 0 10.06 0 12s.46 3.77 1.27 5.39l4-3.15z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.27 6.61l4 3.15c.95-2.85 3.6-4.96 6.73-4.96z"
-                />
-              </svg>
-            )}
-            <span>Continue with Google</span>
-          </button>
-        </div>
-
-        {/* Redirect to Register link */}
-        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-          Don&apos;t have an account yet?{" "}
-          <Link
-            href="/register"
-            className="link link-primary link-hover font-bold inline-flex items-center gap-1"
-          >
-            <span>Register here</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </p>
-      </div>
       </div>
     </div>
   );
