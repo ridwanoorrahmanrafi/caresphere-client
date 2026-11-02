@@ -82,77 +82,50 @@ export default function Banner() {
             </div>
           </div>
 
-          {/* Right Column: Visual Composition with floating cards */}
+          {/* Right Column: Hero Visual Container */}
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md lg:max-w-none">
-              {/* DaisyUI Stack Component: Stacked Community Initiative Cards */}
-              <div className="stack stack-bottom w-full cursor-pointer">
-                {/* Main Visual Image with DaisyUI Hover 3D & Aura Highlight */}
-                <div className="hover-3d aura aura-glow rounded-3xl w-full">
-                  <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800">
-                    <img
-                      src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80"
-                      alt="Community Volunteers Distributing Winter Aid"
-                      className="w-full h-80 sm:h-96 object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-5 left-5 right-5 text-white">
-                      <span className="badge badge-xs badge-success uppercase tracking-wider mb-1 font-bold">
-                        Featured Initiative
-                      </span>
-                      <p className="text-base font-bold leading-tight drop-shadow-sm">
-                        Winter Clothes Distribution for Underprivileged Children
-                      </p>
-                      <p className="text-xs text-slate-200 mt-1 flex items-center gap-1">
-                        <span>Mirpur 10, Dhaka</span> • <span>Upcoming This Weekend</span>
-                      </p>
-                    </div>
-                  </div>
-                  {/* 8 hover zones needed for DaisyUI 3D effect */}
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-
-                {/* Stack Card 2: Secondary initiative background card */}
-                <div className="rounded-3xl border border-emerald-300/80 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 shadow-xl h-80 sm:h-96 flex items-end p-5">
-                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
-                    🌲 Urban Afforestation & Clean-up Drive
+              {/* Main Visual Image with Glass Card Overlay */}
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 bg-slate-900">
+                <img
+                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80"
+                  alt="Community Volunteers Distributing Winter Aid"
+                  className="w-full h-80 sm:h-96 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+                <div className="absolute bottom-5 left-5 right-5 text-white">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-600/90 text-white backdrop-blur-md shadow-sm mb-2 border border-white/20">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Featured Cause</span>
                   </span>
-                </div>
-
-                {/* Stack Card 3: Tertiary initiative background card */}
-                <div className="rounded-3xl border border-teal-300/80 dark:border-teal-800 bg-teal-50 dark:bg-teal-950/40 shadow-lg h-80 sm:h-96 flex items-end p-5">
-                  <span className="text-xs font-bold text-teal-800 dark:text-teal-300">
-                    🩺 Free Child Health Checkup Camp
-                  </span>
+                  <p className="text-base sm:text-lg font-bold leading-tight drop-shadow-sm text-white">
+                    Winter Clothes Distribution for Underprivileged Children
+                  </p>
+                  <p className="text-xs text-slate-200 mt-1 flex items-center gap-1">
+                    <span>Mirpur 10, Dhaka</span> • <span>Upcoming Community Drive</span>
+                  </p>
                 </div>
               </div>
 
               {/* Floating Badge 1: Community Verified */}
-              <div className="absolute -top-4 left-2 sm:-left-6 p-2.5 sm:p-3 rounded-2xl glass border border-slate-200/80 dark:border-slate-800 shadow-xl flex items-center gap-2.5 sm:gap-3 animate-bounce [animation-duration:4s]">
+              <div className="absolute -top-4 left-3 sm:-left-4 p-2.5 sm:p-3 rounded-2xl glass border border-slate-200/80 dark:border-slate-800 shadow-xl flex items-center gap-2.5 sm:gap-3">
                 <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-slate-900 dark:text-white">100% Transparent</p>
-                  <p className="text-[10px] sm:text-[11px] text-slate-500">Zero Intermediaries</p>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white">100% Verified</p>
+                  <p className="text-[10px] text-slate-500">Zero Intermediaries</p>
                 </div>
               </div>
 
               {/* Floating Badge 2: Direct Impact */}
-              <div className="absolute -bottom-4 right-2 sm:-right-6 p-2.5 sm:p-3 rounded-2xl glass border border-slate-200/80 dark:border-slate-800 shadow-xl flex items-center gap-2.5 sm:gap-3">
+              <div className="absolute -bottom-4 right-3 sm:-right-4 p-2.5 sm:p-3 rounded-2xl glass border border-slate-200/80 dark:border-slate-800 shadow-xl flex items-center gap-2.5 sm:gap-3">
                 <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-100 dark:bg-teal-950/70 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
                   <Users className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-900 dark:text-white">Join as Volunteer</p>
-                  <p className="text-[10px] sm:text-[11px] text-slate-500">1-Click RSVP Tracking</p>
+                  <p className="text-[10px] text-slate-500">1-Click RSVP Tracking</p>
                 </div>
               </div>
             </div>

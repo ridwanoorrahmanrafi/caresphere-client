@@ -117,10 +117,10 @@ export default function Navbar() {
 
           {/* DaisyUI Navbar Center: Desktop Navigation Links */}
           <div className="navbar-center hidden md:inline-flex">
-            <nav className="flex items-center gap-1 lg:gap-2">
+            <nav className="flex items-center gap-1.5 lg:gap-2">
               <Link
                 href="/"
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors ${
                   isActive("/")
                     ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"
@@ -129,175 +129,56 @@ export default function Navbar() {
                 Home
               </Link>
 
-              {/* DaisyUI Megamenu Component */}
-              <div className="megamenu megamenu-wide megamenu-md" ref={megamenuRef}>
-                <span className="megamenu-active hidden lg:block" />
+              <Link
+                href="/upcoming-events"
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                  isActive("/upcoming-events")
+                    ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
+                    : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                }`}
+              >
+                <Calendar className="w-4 h-4" />
+                <span>Upcoming Events</span>
+              </Link>
 
-                <button
-                  type="button"
-                  popoverTarget="initiatives-megamenu"
-                  aria-expanded={megamenuOpen}
-                  onClick={() => setMegamenuOpen(!megamenuOpen)}
-                  className={`megamenu-trigger ${
-                    megamenuOpen
-                      ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
-                      : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-                  }`}
-                >
-                  <Sparkles className="w-4 h-4 text-emerald-500" />
-                  <span>Initiatives</span>
-                </button>
+              <Link
+                href="/create-event"
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                  isActive("/create-event")
+                    ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
+                    : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                }`}
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Host Event</span>
+              </Link>
 
-                {/* Megamenu Popover Dropdown */}
-                <div
-                  id="initiatives-megamenu"
-                  popover="auto"
-                  className={`megamenu-dropdown ${megamenuOpen ? "is-open" : ""} p-6`}
-                >
-                  <div className="grid grid-cols-12 gap-6">
-                    {/* Column 1: Welfare & Relief */}
-                    <div className="col-span-4 space-y-3">
-                      <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-                        <HeartHandshake className="w-4 h-4 text-emerald-500" />
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                          Welfare & Relief
-                        </h4>
-                      </div>
-                      <div className="space-y-1">
-                        <Link
-                          href="/upcoming-events"
-                          onClick={() => setMegamenuOpen(false)}
-                          className="group flex flex-col p-2.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
-                        >
-                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                            Winter Warmth Drives
-                          </span>
-                          <span className="text-xs text-slate-500 dark:text-slate-400">
-                            Thermal blankets & clothing
-                          </span>
-                        </Link>
-                        <Link
-                          href="/upcoming-events"
-                          onClick={() => setMegamenuOpen(false)}
-                          className="group flex flex-col p-2.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
-                        >
-                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                            Food Security Drives
-                          </span>
-                          <span className="text-xs text-slate-500 dark:text-slate-400">
-                            Warm meals & nutrition packs
-                          </span>
-                        </Link>
-                        <Link
-                          href="/upcoming-events"
-                          onClick={() => setMegamenuOpen(false)}
-                          className="group flex flex-col p-2.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
-                        >
-                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                            Senior & Orphan Aid
-                          </span>
-                          <span className="text-xs text-slate-500 dark:text-slate-400">
-                            Shelter care & essentials
-                          </span>
-                        </Link>
-                      </div>
-                    </div>
-
-                    {/* Column 2: Eco & Health */}
-                    <div className="col-span-4 space-y-3">
-                      <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-                        <TreePine className="w-4 h-4 text-teal-500" />
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                          Eco & Health
-                        </h4>
-                      </div>
-                      <div className="space-y-1">
-                        <Link
-                          href="/upcoming-events"
-                          onClick={() => setMegamenuOpen(false)}
-                          className="group flex flex-col p-2.5 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors"
-                        >
-                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-teal-600 dark:group-hover:text-teal-400">
-                            Urban Tree Plantations
-                          </span>
-                          <span className="text-xs text-slate-500 dark:text-slate-400">
-                            Native trees & seed dispersal
-                          </span>
-                        </Link>
-                        <Link
-                          href="/upcoming-events"
-                          onClick={() => setMegamenuOpen(false)}
-                          className="group flex flex-col p-2.5 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors"
-                        >
-                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-teal-600 dark:group-hover:text-teal-400">
-                            Canal & Lake Cleanups
-                          </span>
-                          <span className="text-xs text-slate-500 dark:text-slate-400">
-                            Zero-waste water recovery
-                          </span>
-                        </Link>
-                        <Link
-                          href="/upcoming-events"
-                          onClick={() => setMegamenuOpen(false)}
-                          className="group flex flex-col p-2.5 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors"
-                        >
-                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-teal-600 dark:group-hover:text-teal-400">
-                            Free Medical Checkups
-                          </span>
-                          <span className="text-xs text-slate-500 dark:text-slate-400">
-                            Health & vitals screening
-                          </span>
-                        </Link>
-                      </div>
-                    </div>
-
-                    {/* Column 3: Spotlight Card */}
-                    <div className="col-span-4 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-slate-100 dark:to-slate-800/60 p-4 border border-emerald-500/20 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="badge badge-sm badge-success font-bold text-[10px] uppercase tracking-wider">
-                            Spotlight
-                          </span>
-                          <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                            Active Now
-                          </span>
-                        </div>
-                        <h5 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
-                          Winter Warmth Initiative 2026
-                        </h5>
-                        <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 mb-3 leading-relaxed">
-                          Join 150+ volunteers distributing 500+ thermal blankets across northern communities.
-                        </p>
-                      </div>
-                      <Link
-                        href="/upcoming-events"
-                        onClick={() => setMegamenuOpen(false)}
-                        className="link link-hover link-primary inline-flex items-center gap-1.5 text-xs font-bold pt-2 border-t border-slate-200/60 dark:border-slate-700/60"
-                      >
-                        <span>Explore All Events</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="indicator">
-                <span className="indicator-item badge badge-primary badge-xs text-[9px] font-bold">
-                  Hot
-                </span>
-                <Link
-                  href="/upcoming-events"
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
-                    isActive("/upcoming-events")
-                      ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
-                      : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"
-                  }`}
-                >
-                  <Calendar className="w-4 h-4" />
-                  <span>Upcoming Events</span>
-                </Link>
-              </div>
+              {user && (
+                <>
+                  <Link
+                    href="/manage-events"
+                    className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                      isActive("/manage-events")
+                        ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
+                        : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                    }`}
+                  >
+                    <ListOrdered className="w-4 h-4" />
+                    <span>Manage Events</span>
+                  </Link>
+                  <Link
+                    href="/joined-events"
+                    className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                      isActive("/joined-events")
+                        ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
+                        : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                    }`}
+                  >
+                    <CalendarCheck className="w-4 h-4" />
+                    <span>Joined Events</span>
+                  </Link>
+                </>
+              )}
             </nav>
           </div>
 
@@ -551,58 +432,17 @@ export default function Navbar() {
                   <span>Upcoming Events</span>
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/create-event"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`font-semibold ${isActive("/create-event") ? "menu-active" : ""}`}
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Host an Event</span>
+                </Link>
+              </li>
             </ul>
-
-            {/* Mobile DaisyUI Megamenu (Vertical Modifier) */}
-            <div className="megamenu megamenu-vertical">
-              <button
-                type="button"
-                onClick={() => setMobileInitiativesOpen(!mobileInitiativesOpen)}
-                className="megamenu-trigger w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-semibold text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-emerald-500" />
-                  <span>Initiatives & Causes</span>
-                </div>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    mobileInitiativesOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              {mobileInitiativesOpen && (
-                <div className="megamenu-dropdown px-3 py-2 space-y-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl mt-1 border border-slate-200/60 dark:border-slate-800">
-                  <Link
-                    href="/upcoming-events"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-emerald-600"
-                  >
-                    ❄️ Winter Warmth Drives
-                  </Link>
-                  <Link
-                    href="/upcoming-events"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-emerald-600"
-                  >
-                    🍲 Food Security Drives
-                  </Link>
-                  <Link
-                    href="/upcoming-events"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-emerald-600"
-                  >
-                    🌲 Urban Tree Plantations
-                  </Link>
-                  <Link
-                    href="/upcoming-events"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-emerald-600"
-                  >
-                    🩺 Free Medical Camps
-                  </Link>
-                </div>
-              )}
-            </div>
 
             {/* User Details & Portal Links */}
             {user ? (
