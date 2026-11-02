@@ -147,6 +147,11 @@ export default function ManageEventsPage() {
       return;
     }
 
+    if (editThumbnail.startsWith("data:") && editThumbnail.length > 2 * 1024 * 1024) {
+      toast.error("Image file is too large for upload. Please select a smaller photo or provide an image link.");
+      return;
+    }
+
     try {
       setUpdating(true);
       const res = await authFetch(`${API_BASE_URL}/events/${editingEvent._id}`, {
@@ -221,7 +226,7 @@ export default function ManageEventsPage() {
             <li>
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 hover:text-emerald-600 dark:hover:text-emerald-400"
+                className="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
               >
                 <Home className="w-4 h-4" />
                 <span>Home</span>
@@ -234,8 +239,8 @@ export default function ManageEventsPage() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-              <ListOrdered className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
+              <ListOrdered className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>Organizer Management</span>
             </div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -265,7 +270,7 @@ export default function ManageEventsPage() {
 
             <Link
               href="/create-event"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-md shadow-emerald-500/20"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] transition-all shadow-md shadow-indigo-500/20"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Create Event</span>
@@ -300,7 +305,7 @@ export default function ManageEventsPage() {
                   </p>
                   <p className="text-xs text-slate-500 mt-0.5">Active campaigns organized</p>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                   <Calendar className="w-6 h-6" />
                 </div>
               </div>
@@ -315,7 +320,7 @@ export default function ManageEventsPage() {
                   </p>
                   <p className="text-xs text-slate-500 mt-0.5">Distinct welfare sectors</p>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-teal-600 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400 flex items-center justify-center">
                   <FolderOpen className="w-6 h-6" />
                 </div>
               </div>
@@ -344,7 +349,7 @@ export default function ManageEventsPage() {
                           <span className="badge badge-xs badge-soft badge-primary font-semibold">
                             {event.eventType}
                           </span>
-                          <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
                             {event.eventDate}
                           </span>
                         </div>
@@ -361,7 +366,7 @@ export default function ManageEventsPage() {
                     <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 gap-2">
                       <Link
                         href={`/events/${event._id}`}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline py-1.5 px-2"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline py-1.5 px-2"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
                         <span>Public View</span>
@@ -370,7 +375,7 @@ export default function ManageEventsPage() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => openEditModal(event)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40 transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 transition-colors"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                           <span>Edit</span>
@@ -425,7 +430,7 @@ export default function ManageEventsPage() {
                               </p>
                               <Link
                                 href={`/events/${event._id}`}
-                                className="link link-primary link-hover text-xs inline-flex items-center gap-1 mt-0.5"
+                                className="link link-hover text-indigo-600 dark:text-indigo-400 text-xs inline-flex items-center gap-1 mt-0.5"
                               >
                                 <span>Public Page</span>
                                 <ExternalLink className="w-3 h-3" />
@@ -442,7 +447,7 @@ export default function ManageEventsPage() {
 
                         <td className="whitespace-nowrap text-slate-600 dark:text-slate-300">
                           <div className="flex items-center gap-1.5 font-medium">
-                            <Calendar className="w-3.5 h-3.5 text-emerald-500" />
+                            <Calendar className="w-3.5 h-3.5 text-indigo-500" />
                             <span>{event.eventDate}</span>
                           </div>
                         </td>
@@ -458,14 +463,14 @@ export default function ManageEventsPage() {
                           <div className="inline-flex items-center gap-2">
                             <button
                               onClick={() => openEditModal(event)}
-                              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700 transition-colors"
+                              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
                               title="Edit Event"
                             >
                               <Edit3 className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDelete(event._id, event.title)}
-                              className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 transition-colors"
+                              className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 transition-colors cursor-pointer"
                               title="Delete Event"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -512,7 +517,7 @@ export default function ManageEventsPage() {
                           onClick={() => setCurrentPage(pageNumber)}
                           className={`join-item btn btn-xs sm:btn-sm ${
                             currentPage === pageNumber
-                              ? "btn-active !bg-emerald-600 !text-white !border-emerald-600"
+                              ? "btn-active !bg-indigo-600 !text-white !border-indigo-600 shadow-xs shadow-indigo-500/25"
                               : "btn-outline"
                           }`}
                         >
@@ -549,7 +554,7 @@ export default function ManageEventsPage() {
             </div>
             <Link
               href="/create-event"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] transition-all shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:-translate-y-0.5"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Create Your First Event</span>
@@ -693,7 +698,7 @@ export default function ManageEventsPage() {
                   <button
                     type="submit"
                     disabled={updating}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-60 transition-colors shadow-md shadow-emerald-500/20"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] disabled:opacity-60 transition-all shadow-md shadow-indigo-500/20 cursor-pointer"
                   >
                     {updating ? (
                       <>

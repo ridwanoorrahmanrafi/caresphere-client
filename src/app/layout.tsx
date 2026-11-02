@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../context/ThemeContext";
 import { AuthProvider } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Toaster } from "react-hot-toast";
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-plus-jakarta",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "CareSphere | Community Social Development Events Platform",
@@ -19,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+    <html lang="en" className={plusJakarta.variable} suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col antialiased font-sans selection:bg-indigo-600 selection:text-white">
         <ThemeProvider>
           <AuthProvider>
             <Toaster

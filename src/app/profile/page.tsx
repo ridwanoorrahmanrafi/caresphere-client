@@ -80,7 +80,7 @@ export default function ProfilePage() {
         <div className="breadcrumbs text-sm text-slate-500 dark:text-slate-400">
           <ul>
             <li>
-              <Link href="/" className="inline-flex items-center gap-1.5 hover:text-emerald-600 dark:hover:text-emerald-400">
+              <Link href="/" className="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                 <Home className="w-4 h-4" />
                 <span>Home</span>
               </Link>
@@ -91,10 +91,10 @@ export default function ProfilePage() {
           </ul>
         </div>
 
-        {/* DaisyUI Responsive Navigation Menu */}
+        {/* Responsive Navigation Menu */}
         <ul className="menu menu-vertical sm:menu-horizontal menu-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 shadow-sm w-full gap-1">
           <li>
-            <Link href="/profile" className="menu-active">
+            <Link href="/profile" className="menu-active !bg-indigo-600 !text-white">
               <User className="w-4 h-4" />
               <span>My Profile</span>
             </Link>
@@ -122,8 +122,8 @@ export default function ProfilePage() {
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl p-8 sm:p-12 space-y-8">
           {/* Header */}
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>User Settings</span>
             </div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -136,12 +136,11 @@ export default function ProfilePage() {
 
           {/* Current Profile Preview */}
           <div className="flex items-center gap-5 p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
-            {/* DaisyUI Avatar with DaisyUI Indicator Component */}
             <div className="avatar indicator">
               <span className="indicator-item badge badge-primary badge-xs text-[10px] font-bold shadow-sm">
                 Active
               </span>
-              <div className="w-16 h-16 rounded-full ring-2 ring-emerald-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 shadow-sm">
+              <div className="w-16 h-16 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 shadow-sm overflow-hidden">
                 <img
                   src={photoURL || user?.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"}
                   alt={name}
@@ -203,7 +202,7 @@ export default function ProfilePage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Your Name"
-                      className="input input-md w-full pl-10 pr-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                      className="input input-md w-full pl-10 pr-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-colors"
                     />
                   </div>
                 </label>
@@ -227,13 +226,12 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Profile Photo (URL or DaisyUI File Input) */}
+              {/* Profile Photo (URL or File Input) */}
               <div className="space-y-3">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Profile Photo
                 </label>
 
-                {/* DaisyUI File Input Component */}
                 <fieldset className="fieldset bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-xl p-3">
                   <legend className="fieldset-legend text-xs font-semibold text-slate-600 dark:text-slate-300">
                     Upload Avatar File
@@ -249,7 +247,6 @@ export default function ProfilePage() {
                   </label>
                 </fieldset>
 
-                {/* DaisyUI Textarea Component with Fieldset and Label */}
                 <fieldset className="fieldset bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-xl p-3">
                   <legend className="fieldset-legend text-xs font-semibold text-slate-600 dark:text-slate-300">
                     Your Volunteer Bio
@@ -264,7 +261,6 @@ export default function ProfilePage() {
                   </div>
                 </fieldset>
 
-                {/* DaisyUI Label for Input Component (Prefix https://) */}
                 <label className="input w-full">
                   <span className="label font-medium">https://</span>
                   <input
@@ -294,7 +290,7 @@ export default function ProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-60 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5 mt-4 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] disabled:opacity-60 transition-all shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:-translate-y-0.5 mt-4 cursor-pointer"
             >
               {saving ? (
                 <>
@@ -311,11 +307,11 @@ export default function ProfilePage() {
           </form>
         </div>
 
-        {/* DaisyUI OTP Component: Two-Factor Authentication & Verification Code Card */}
+        {/* Two-Factor Authentication & Verification Code Card */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl p-8 sm:p-10 space-y-6">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300">
-              <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200/50 dark:border-violet-800/50">
+              <ShieldCheck className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
               <span>Account Security</span>
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">

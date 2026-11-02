@@ -87,7 +87,7 @@ export default function UpcomingEventsPage() {
 
   return (
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-      {/* DaisyUI Hero Component with Overlay Image */}
+      {/* Hero Component with Overlay Image */}
       <div
         className="hero min-h-[20rem] rounded-3xl overflow-hidden relative shadow-xl border border-slate-200/80 dark:border-slate-800"
         style={{
@@ -95,10 +95,10 @@ export default function UpcomingEventsPage() {
             "url(https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1600&q=80)",
         }}
       >
-        <div className="hero-overlay bg-slate-950/75 backdrop-blur-[1px]"></div>
+        <div className="hero-overlay bg-slate-950/80 backdrop-blur-[1px]"></div>
         <div className="hero-content text-center text-white py-10 px-6">
           <div className="max-w-2xl space-y-3.5">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
               <div className="status-ping-wrapper">
                 <div aria-label="live opportunities" className="status status-xs status-success animate-ping"></div>
                 <div aria-label="live opportunities" className="status status-xs status-success"></div>
@@ -117,11 +117,11 @@ export default function UpcomingEventsPage() {
 
       {/* Filter & Search Bar */}
       <div className="space-y-4 max-w-4xl mx-auto">
-        {/* DaisyUI Join Component: Grouping Search Input, Category Select, and Search Button */}
+        {/* Search Input, Category Select, and Search Button */}
         <div className="join join-vertical sm:join-horizontal w-full shadow-md rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
           <div className="grow">
             <label className="input input-lg input-ghost join-item w-full flex items-center border-none bg-transparent focus-within:outline-none">
-              <Search className="w-5 h-5 opacity-60 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <Search className="w-5 h-5 opacity-60 shrink-0 text-indigo-600 dark:text-indigo-400" />
               <input
                 ref={searchInputRef}
                 type="search"
@@ -164,7 +164,7 @@ export default function UpcomingEventsPage() {
           <button
             type="button"
             onClick={() => fetchEvents()}
-            className="join-item px-7 py-3 font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+            className="join-item px-7 py-3 font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-sm shadow-indigo-500/20"
           >
             <Search className="w-4 h-4" />
             <span>Search</span>
@@ -172,9 +172,9 @@ export default function UpcomingEventsPage() {
         </div>
 
         {/* Quick Category Tabs Bar with Smooth Horizontal Scrolling */}
-        <div className="flex items-center justify-between gap-3 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-x-auto">
+        <div className="flex items-center justify-between gap-3 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-x-auto">
           <div className="flex items-center gap-1.5 shrink-0 px-2 text-slate-500 dark:text-slate-400">
-            <Filter className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <Filter className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
             <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">Category:</span>
           </div>
 
@@ -186,7 +186,7 @@ export default function UpcomingEventsPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                   selectedCategory === cat
-                    ? "bg-emerald-600 text-white shadow-sm shadow-emerald-500/25"
+                    ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xs shadow-indigo-500/25"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
                 }`}
               >
@@ -212,7 +212,7 @@ export default function UpcomingEventsPage() {
       {loading ? (
         <div className="space-y-6">
           <div className="flex items-center justify-center gap-2 py-4">
-            <span className="loading loading-dots loading-md text-primary" />
+            <span className="loading loading-dots loading-md text-indigo-600" />
             <span className="skeleton skeleton-text text-sm font-semibold">
               Filtering community events...
             </span>
@@ -231,7 +231,7 @@ export default function UpcomingEventsPage() {
             ))}
           </div>
 
-          {/* DaisyUI Pagination Component (using join & join-item btn) */}
+          {/* Pagination Component */}
           {totalPages > 1 && (
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-200 dark:border-slate-800">
               <p className="text-xs text-slate-500 font-medium">
@@ -263,7 +263,9 @@ export default function UpcomingEventsPage() {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
                     className={`join-item btn btn-sm ${
-                      currentPage === pageNumber ? "btn-active !bg-emerald-600 !text-white !border-emerald-600" : "btn-outline"
+                      currentPage === pageNumber
+                        ? "btn-active !bg-indigo-600 !text-white !border-indigo-600 shadow-xs shadow-indigo-500/25"
+                        : "btn-outline"
                     }`}
                   >
                     {pageNumber}
@@ -286,7 +288,7 @@ export default function UpcomingEventsPage() {
           )}
         </div>
       ) : (
-        <div role="alert" className="alert alert-info alert-outline alert-vertical max-w-xl mx-auto py-12 px-6 shadow-sm">
+        <div role="alert" className="alert alert-info alert-outline alert-vertical max-w-xl mx-auto py-12 px-6 shadow-xs">
           <Frown className="w-10 h-10 text-sky-500 mx-auto" />
           <div>
             <h3 className="text-xl font-bold">No Upcoming Events Found</h3>
@@ -302,7 +304,7 @@ export default function UpcomingEventsPage() {
                 setSearchQuery("");
                 setSelectedCategory("All");
               }}
-              className="btn btn-sm btn-primary inline-flex items-center gap-1.5 mt-2"
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 shadow-sm shadow-indigo-500/20 inline-flex items-center gap-1.5 mt-2 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Reset Filters</span>

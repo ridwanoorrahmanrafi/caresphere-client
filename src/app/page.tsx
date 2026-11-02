@@ -54,7 +54,7 @@ export default function HomePage() {
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
               <Calendar className="w-3.5 h-3.5" />
               <span>Upcoming Initiatives</span>
             </div>
@@ -69,16 +69,16 @@ export default function HomePage() {
 
           <Link
             href="/upcoming-events"
-            className="link link-primary link-hover inline-flex items-center gap-2 text-sm font-bold group shrink-0"
+            className="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 group shrink-0"
           >
             <span>View All Upcoming Events</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        {/* DaisyUI Alert Component: Connection Warning */}
+        {/* Server Notice Alert */}
         {error && !loading && (
-          <div role="alert" className="alert alert-warning alert-soft alert-vertical sm:alert-horizontal mb-6 shadow-sm">
+          <div role="alert" className="alert alert-warning alert-soft alert-vertical sm:alert-horizontal mb-6 shadow-xs">
             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
@@ -92,7 +92,7 @@ export default function HomePage() {
         {loading ? (
           <div className="space-y-6">
             <div className="flex items-center justify-center gap-2 py-4">
-              <span className="loading loading-infinity loading-lg text-primary" />
+              <span className="loading loading-infinity loading-lg text-indigo-600" />
               <span className="skeleton skeleton-text text-sm font-semibold">
                 Fetching latest community initiatives...
               </span>
@@ -120,7 +120,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/create-event"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] transition-all shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:-translate-y-0.5"
             >
               Create an Event Now
             </Link>
@@ -134,7 +134,7 @@ export default function HomePage() {
       {/* 5. Gallery Section */}
       <Gallery />
 
-      {/* 6. FAQ Section (DaisyUI Collapse Component) */}
+      {/* 6. FAQ Section */}
       <FAQ />
 
       {/* 7. Newsletter Section */}

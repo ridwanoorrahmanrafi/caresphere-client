@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @variant dark (&:where(.dark, .dark *));
@@ -15,20 +16,20 @@
   }
 
   html.dark {
-    --bg-page: #090d16;
+    --bg-page: #0b0f19;
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --card-bg: #111827;
     --card-border: #1f2937;
-    --nav-bg: rgba(15, 23, 42, 0.98);
-    --input-bg: #1e293b;
-    --input-border: #334155;
+    --nav-bg: rgba(11, 15, 25, 0.98);
+    --input-bg: #162032;
+    --input-border: #273549;
   }
 
   body {
     background-color: var(--bg-page);
     color: var(--text-primary);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: var(--font-plus-jakarta, 'Plus Jakarta Sans'), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     transition: background-color 0.25s ease, color 0.25s ease;
     overflow-x: hidden;
   }
@@ -273,16 +274,16 @@ html.dark .avatar-offline::before {
 }
 
 .aura-glow {
-  box-shadow: 0 0 35px -5px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.35);
   transition: box-shadow 0.3s ease;
 }
 
 html.dark .aura-glow {
-  box-shadow: 0 0 45px -5px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 45px -5px rgba(99, 102, 241, 0.25);
 }
 
 .aura-dual {
-  box-shadow: -8px -8px 30px -5px rgba(16, 185, 129, 0.3), 8px 8px 30px -5px rgba(20, 184, 166, 0.3);
+  box-shadow: -8px -8px 30px -5px rgba(99, 102, 241, 0.3), 8px 8px 30px -5px rgba(124, 58, 237, 0.3);
 }
 
 .aura-rainbow {
@@ -302,23 +303,23 @@ html.dark .aura-glow {
 }
 
 .aura-xs {
-  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.25));
+  filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.25));
 }
 
 .aura-sm {
-  filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.25));
+  filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.25));
 }
 
 .aura-md {
-  filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.3));
+  filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3));
 }
 
 .aura-lg {
-  filter: drop-shadow(0 0 30px rgba(16, 185, 129, 0.35));
+  filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.35));
 }
 
 .aura-xl {
-  filter: drop-shadow(0 0 42px rgba(16, 185, 129, 0.4));
+  filter: drop-shadow(0 0 42px rgba(99, 102, 241, 0.4));
 }
 
 /* DaisyUI Badge Primitives */
@@ -372,7 +373,7 @@ html.dark .aura-glow {
 
 /* Badge Solid Colors */
 .badge-primary {
-  background-color: #059669;
+  background-color: #4f46e5;
   color: #ffffff;
 }
 
@@ -413,12 +414,12 @@ html.dark .aura-glow {
 
 /* Badge Soft Styles */
 .badge-soft.badge-primary {
-  background-color: rgba(5, 150, 105, 0.15);
-  color: #059669;
+  background-color: rgba(79, 70, 229, 0.15);
+  color: #4f46e5;
 }
 html.dark .badge-soft.badge-primary {
-  background-color: rgba(5, 150, 105, 0.25);
-  color: #34d399;
+  background-color: rgba(79, 70, 229, 0.25);
+  color: #818cf8;
 }
 
 .badge-soft.badge-secondary {
@@ -704,7 +705,7 @@ html.dark .chat-bubble {
 
 /* Chat Bubble Color Modifiers */
 .chat-bubble-primary {
-  background-color: #059669;
+  background-color: #4f46e5;
   color: #ffffff;
 }
 
@@ -2979,9 +2980,9 @@ input[type="radio"].btn::before {
   height: 100%;
 }
 input[type="radio"].btn:checked {
-  background-color: #059669;
+  background-color: #4f46e5;
   color: #ffffff;
-  border-color: #059669;
+  border-color: #4f46e5;
 }
 
 /* DaisyUI Tabs Component Primitives */
@@ -3019,12 +3020,12 @@ input[type="radio"].btn:checked {
 .tab.tab-active,
 .tab:is(input[type="radio"]:checked),
 .tab[aria-selected="true"] {
-  color: #059669;
+  color: #4f46e5;
 }
 html.dark .tab.tab-active,
 html.dark .tab:is(input[type="radio"]:checked),
 html.dark .tab[aria-selected="true"] {
-  color: #34d399;
+  color: #818cf8;
 }
 
 .tab.tab-disabled,
@@ -3071,15 +3072,15 @@ input[type="radio"].tab::after {
 .tabs-border > .tab.tab-active,
 .tabs.tabs-border > .tab:is(input[type="radio"]:checked),
 .tabs-border > .tab:is(input[type="radio"]:checked) {
-  border-bottom-color: #059669;
-  color: #059669;
+  border-bottom-color: #4f46e5;
+  color: #4f46e5;
 }
 html.dark .tabs.tabs-border > .tab.tab-active,
 html.dark .tabs-border > .tab.tab-active,
 html.dark .tabs.tabs-border > .tab:is(input[type="radio"]:checked),
 html.dark .tabs-border > .tab:is(input[type="radio"]:checked) {
-  border-bottom-color: #34d399;
-  color: #34d399;
+  border-bottom-color: #818cf8;
+  color: #818cf8;
 }
 
 /* Style: tabs-box */
@@ -6426,6 +6427,30 @@ html.dark .border-base-300 {
   display: inline-block;
   text-align: right;
   opacity: 0.5;
+}
+
+/* Signature CareSphere Button Primitives (Royal Indigo & Electric Violet) */
+.btn-primary-gradient {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #7c3aed 100%);
+  color: #ffffff;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 10px 22px -5px rgba(79, 70, 229, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary-gradient:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 50%, #6d28d9 100%);
+  box-shadow: 0 14px 28px -5px rgba(79, 70, 229, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-primary-gradient:active {
+  transform: scale(0.98);
 }
 
 

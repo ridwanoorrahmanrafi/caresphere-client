@@ -12,10 +12,10 @@ interface EventCardProps {
 // Color badges for different event types
 const eventTypeColors: Record<string, string> = {
   "Donation Drive": "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-  "Clean-up": "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-  "Plantation": "bg-teal-100 text-teal-800 dark:bg-teal-950/60 dark:text-teal-300 border-teal-200 dark:border-teal-800",
+  "Clean-up": "bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800",
+  "Plantation": "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
   "Healthcare": "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-  "Education": "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
+  "Education": "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800",
   "Food Relief": "bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300 border-orange-200 dark:border-orange-800",
   "Disaster Relief": "bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300 border-red-200 dark:border-red-800",
   "Other": "bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
@@ -30,7 +30,7 @@ export default function EventCard({ event }: EventCardProps) {
 
   const badgeStyle =
     eventTypeColors[event.eventType] ||
-    "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800";
+    "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800";
 
   // Deterministic recruitment progress percentage based on event ID
   const recruitmentProgress = React.useMemo(() => {
@@ -40,7 +40,7 @@ export default function EventCard({ event }: EventCardProps) {
   }, [event._id]);
 
   return (
-    <div className="group rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full w-full">
+    <div className="group rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full w-full">
       {/* Event Banner Image Container */}
       <div className="relative w-full h-52 overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0">
         <img
@@ -56,7 +56,7 @@ export default function EventCard({ event }: EventCardProps) {
 
         {/* Category Badge on Top-Left */}
         <div className="absolute top-3 left-3 z-10 pointer-events-none">
-          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-sm ${badgeStyle}`}>
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-xs ${badgeStyle}`}>
             <Tag className="w-3 h-3" />
             <span>{event.eventType}</span>
           </span>
@@ -75,13 +75,13 @@ export default function EventCard({ event }: EventCardProps) {
       <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
         <div className="space-y-2.5">
           {/* Event Date */}
-          <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+          <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400">
             <Calendar className="w-4 h-4 shrink-0" />
             <span>{formattedDate}</span>
           </div>
 
           {/* Title */}
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white line-clamp-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-snug">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">
             {event.title}
           </h3>
 
@@ -103,13 +103,13 @@ export default function EventCard({ event }: EventCardProps) {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-slate-400">
               <span>Recruitment Target</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+              <span className="text-indigo-600 dark:text-indigo-400 font-bold">
                 {recruitmentProgress}% Mobilized
               </span>
             </div>
             <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
               <div
-                className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500"
+                className="bg-gradient-to-r from-indigo-500 to-violet-500 h-1.5 rounded-full transition-all duration-500"
                 style={{ width: `${recruitmentProgress}%` }}
               />
             </div>
@@ -118,7 +118,7 @@ export default function EventCard({ event }: EventCardProps) {
           {/* View Event Button */}
           <Link
             href={`/events/${event._id}`}
-            className="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-all shadow-md shadow-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/35 hover:-translate-y-0.5 cursor-pointer"
+            className="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] transition-all shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/35 ring-1 ring-white/15 cursor-pointer"
           >
             <span className="text-white font-bold">View Event</span>
             <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />

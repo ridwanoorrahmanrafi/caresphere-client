@@ -100,7 +100,7 @@ export default function JoinedEventsPage() {
             <li>
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 hover:text-emerald-600 dark:hover:text-emerald-400"
+                className="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
               >
                 <Home className="w-4 h-4" />
                 <span>Home</span>
@@ -113,8 +113,8 @@ export default function JoinedEventsPage() {
         {/* Page Header with List / Grid Switcher & Category Filter */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-              <CalendarCheck className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
+              <CalendarCheck className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>Volunteer Dashboard</span>
             </div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -147,7 +147,7 @@ export default function JoinedEventsPage() {
                   onClick={() => setViewMode("list")}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                     viewMode === "list"
-                      ? "bg-emerald-600 text-white shadow-sm shadow-emerald-500/20"
+                      ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xs shadow-indigo-500/20"
                       : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
@@ -158,7 +158,7 @@ export default function JoinedEventsPage() {
                   onClick={() => setViewMode("grid")}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                     viewMode === "grid"
-                      ? "bg-emerald-600 text-white shadow-sm shadow-emerald-500/20"
+                      ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xs shadow-indigo-500/20"
                       : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
@@ -172,9 +172,9 @@ export default function JoinedEventsPage() {
 
         {/* Next Immediate Drive Highlight Card */}
         {!loading && joinedEvents.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 rounded-3xl bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/20 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 rounded-3xl bg-gradient-to-r from-indigo-500/10 via-violet-500/5 to-transparent border border-indigo-500/20 shadow-sm">
             <div className="space-y-1 text-center sm:text-left">
-              <span className="badge badge-sm badge-success font-bold uppercase tracking-wider">
+              <span className="badge badge-sm badge-primary font-bold uppercase tracking-wider">
                 Immediate Next Drive
               </span>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">
@@ -188,7 +188,7 @@ export default function JoinedEventsPage() {
 
             <Link
               href={`/events/${joinedEvents[0]?.eventId}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-sm shrink-0"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] transition-all shadow-sm shadow-indigo-500/20 shrink-0"
             >
               <span>View Details</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -241,7 +241,7 @@ export default function JoinedEventsPage() {
                           {joined.eventType}
                         </span>
                         <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                          <Calendar className="w-3 h-3 text-emerald-500" />
+                          <Calendar className="w-3 h-3 text-indigo-500" />
                           {joined.eventDate}
                         </span>
                       </div>
@@ -258,7 +258,7 @@ export default function JoinedEventsPage() {
                   <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                     <Link
                       href={`/events/${joined.eventId}`}
-                      className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
+                      className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
                       title="View Event Details"
                     >
                       <ExternalLink className="w-4 h-4" />
@@ -281,7 +281,7 @@ export default function JoinedEventsPage() {
               {filteredJoinedEvents.map((joined) => (
                 <div
                   key={joined._id}
-                  className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                  className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 flex flex-col justify-between"
                 >
                   <div>
                     {/* Thumbnail */}
@@ -296,14 +296,14 @@ export default function JoinedEventsPage() {
                         }}
                       />
                       <div className="absolute top-3 left-3">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/90 dark:bg-slate-900/90 text-emerald-700 dark:text-emerald-300 backdrop-blur-md shadow-sm border border-white/20">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/90 dark:bg-slate-900/90 text-indigo-700 dark:text-indigo-300 backdrop-blur-md shadow-sm border border-white/20">
                           <Tag className="w-3 h-3" />
                           {joined.eventType}
                         </span>
                       </div>
 
                       <div className="absolute top-3 right-3">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/90 dark:bg-slate-900/90 text-emerald-700 dark:text-emerald-300 backdrop-blur-md shadow-sm border border-white/20">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/90 dark:bg-slate-900/90 text-indigo-700 dark:text-indigo-300 backdrop-blur-md shadow-sm border border-white/20">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                           <span>Confirmed</span>
                         </span>
@@ -312,7 +312,7 @@ export default function JoinedEventsPage() {
 
                     {/* Info */}
                     <div className="p-5 space-y-3">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400">
                         <Calendar className="w-3.5 h-3.5" />
                         <span>{joined.eventDate}</span>
                       </div>
@@ -332,7 +332,7 @@ export default function JoinedEventsPage() {
                   <div className="p-5 pt-0 flex items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800 mt-4 pt-4">
                     <Link
                       href={`/events/${joined.eventId}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
                     >
                       <span>View Event</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -362,7 +362,7 @@ export default function JoinedEventsPage() {
             </p>
             <Link
               href="/upcoming-events"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] transition-all shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:-translate-y-0.5"
             >
               <span>Explore Upcoming Events</span>
               <ArrowRight className="w-4 h-4" />

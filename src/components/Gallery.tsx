@@ -57,7 +57,7 @@ export default function Gallery() {
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
               <Camera className="w-3.5 h-3.5" />
               <span>Community Action Gallery</span>
             </div>
@@ -71,7 +71,7 @@ export default function Gallery() {
           </div>
 
           {/* Category Filter Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar p-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm shrink-0">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar p-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs shrink-0">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
@@ -79,7 +79,7 @@ export default function Gallery() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                   selectedCategory === cat
-                    ? "bg-emerald-600 text-white shadow-sm shadow-emerald-500/25"
+                    ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xs shadow-indigo-500/25"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
                 }`}
               >
@@ -94,7 +94,7 @@ export default function Gallery() {
           {filteredItems.map((item, idx) => (
             <div
               key={idx}
-              className="group relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-72 sm:h-80"
+              className="group relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 hover:-translate-y-1 h-72 sm:h-80"
             >
               <img
                 src={item.imageUrl}
@@ -106,8 +106,8 @@ export default function Gallery() {
 
               {/* Floating Category Tag */}
               <div className="absolute top-4 left-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 backdrop-blur-md shadow-sm border border-white/20">
-                  <Tag className="w-3 h-3 text-emerald-500" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 backdrop-blur-md shadow-xs border border-white/20">
+                  <Tag className="w-3 h-3 text-indigo-500" />
                   <span>{item.category}</span>
                 </span>
               </div>
@@ -118,7 +118,7 @@ export default function Gallery() {
                   {item.title}
                 </h4>
                 <p className="text-xs text-slate-300 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                   <span>{item.location}</span>
                 </p>
               </div>

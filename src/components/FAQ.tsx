@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { HelpCircle, Sparkles } from "lucide-react";
+import React from "react";
+import { HelpCircle } from "lucide-react";
 
 const faqs = [
   {
@@ -47,7 +47,7 @@ export default function FAQ() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Section Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
             <HelpCircle className="w-3.5 h-3.5" />
             <span>Got Questions?</span>
           </div>
@@ -59,7 +59,7 @@ export default function FAQ() {
           </p>
         </div>
 
-        {/* DaisyUI Collapse Accordion List */}
+        {/* Accordion List */}
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
             <div
@@ -67,7 +67,7 @@ export default function FAQ() {
               tabIndex={0}
               className={`collapse ${
                 faq.type === "arrow" ? "collapse-arrow" : "collapse-plus"
-              } rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all focus:border-emerald-500/50`}
+              } rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all focus:border-indigo-500/50`}
             >
               <input
                 type="checkbox"
@@ -87,4 +87,3 @@ export default function FAQ() {
     </section>
   );
 }
-

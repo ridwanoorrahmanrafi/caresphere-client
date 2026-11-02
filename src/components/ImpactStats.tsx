@@ -11,7 +11,7 @@ interface StatItem {
   iconBg: string;
   iconColor: string;
   progressValue: number;
-  progressColor: string;
+  progressBarColor: string;
 }
 
 const statsData: StatItem[] = [
@@ -22,11 +22,11 @@ const statsData: StatItem[] = [
     subtext: "Across 18 districts in Bangladesh",
     badge: "↗ +18% this month",
     badgeType:
-      "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60",
-    iconBg: "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/50 dark:border-emerald-800/50",
-    iconColor: "text-emerald-600 dark:text-emerald-400",
+      "text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60",
+    iconBg: "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200/50 dark:border-indigo-800/50",
+    iconColor: "text-indigo-600 dark:text-indigo-400",
     progressValue: 92,
-    progressColor: "progress-primary",
+    progressBarColor: "bg-gradient-to-r from-indigo-500 to-indigo-600",
   },
   {
     icon: Shirt,
@@ -39,7 +39,7 @@ const statsData: StatItem[] = [
     iconBg: "bg-amber-50 dark:bg-amber-950/60 border-amber-200/50 dark:border-amber-800/50",
     iconColor: "text-amber-600 dark:text-amber-400",
     progressValue: 75,
-    progressColor: "progress-warning",
+    progressBarColor: "bg-gradient-to-r from-amber-500 to-amber-600",
   },
   {
     icon: Trees,
@@ -48,11 +48,11 @@ const statsData: StatItem[] = [
     subtext: "Restoring urban biodiversity",
     badge: "Green Initiative",
     badgeType:
-      "text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-200/60 dark:border-teal-800/60",
-    iconBg: "bg-teal-50 dark:bg-teal-950/60 border-teal-200/50 dark:border-teal-800/50",
-    iconColor: "text-teal-600 dark:text-teal-400",
+      "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60",
+    iconBg: "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/50 dark:border-emerald-800/50",
+    iconColor: "text-emerald-600 dark:text-emerald-400",
     progressValue: 82,
-    progressColor: "progress-secondary",
+    progressBarColor: "bg-gradient-to-r from-emerald-500 to-teal-600",
   },
   {
     icon: Sparkles,
@@ -61,11 +61,11 @@ const statsData: StatItem[] = [
     subtext: "Grassroots audited milestones",
     badge: "Verified Impact",
     badgeType:
-      "text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60",
-    iconBg: "bg-sky-50 dark:bg-sky-950/60 border-sky-200/50 dark:border-sky-800/50",
-    iconColor: "text-sky-600 dark:text-sky-400",
+      "text-violet-700 dark:text-violet-300 bg-violet-50 dark:bg-violet-950/60 border border-violet-200/60 dark:border-violet-800/60",
+    iconBg: "bg-violet-50 dark:bg-violet-950/60 border-violet-200/50 dark:border-violet-800/50",
+    iconColor: "text-violet-600 dark:text-violet-400",
     progressValue: 99,
-    progressColor: "progress-info",
+    progressBarColor: "bg-gradient-to-r from-violet-500 to-purple-600",
   },
 ];
 
@@ -75,7 +75,7 @@ export default function ImpactStats() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-3">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>Real-time Community Metrics</span>
           </div>
@@ -84,12 +84,12 @@ export default function ImpactStats() {
           </h2>
         </div>
         <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 self-start md:self-auto">
-          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
           <span>All metrics dynamically validated by verified organizers</span>
         </p>
       </div>
 
-      {/* DaisyUI Stat Component with Theme-Adaptive Hover Matrix */}
+      {/* Stat Component with Theme-Adaptive Hover Matrix */}
       <div className="stats stats-vertical lg:stats-horizontal shadow-xl w-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-3xl overflow-hidden transition-colors">
         {statsData.map((s, i) => {
           const Icon = s.icon;
@@ -100,7 +100,7 @@ export default function ImpactStats() {
             >
               <div className="stat-figure">
                 <div
-                  className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${s.iconBg} ${s.iconColor} shadow-sm`}
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${s.iconBg} ${s.iconColor} shadow-xs`}
                 >
                   <Icon className="w-6 h-6" />
                 </div>
@@ -122,17 +122,18 @@ export default function ImpactStats() {
                     {s.badge}
                   </span>
                 )}
-                {/* DaisyUI Progress Component Primitives */}
+                {/* Custom Progress Bar */}
                 <div className="pt-2 mt-0.5 space-y-1">
                   <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 dark:text-slate-500">
                     <span>Target Progress</span>
                     <span className="font-bold text-slate-700 dark:text-slate-300">{s.progressValue}%</span>
                   </div>
-                  <progress
-                    className={`progress ${s.progressColor} w-full h-1.5`}
-                    value={s.progressValue}
-                    max={100}
-                  ></progress>
+                  <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className={`h-1.5 rounded-full ${s.progressBarColor} transition-all duration-500`}
+                      style={{ width: `${s.progressValue}%` }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

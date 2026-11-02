@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
+import Logo from "../../components/Logo";
 import {
   Mail,
   Lock,
   LogIn,
-  HeartHandshake,
   ArrowRight,
   Sparkles,
   Eye,
@@ -68,7 +68,7 @@ export default function LoginPage() {
       } else {
         toast.error(res.message || "Google sign-in failed.");
       }
-    } catch (err: any) {
+    } catch {
       toast.error("Google sign-in encountered an error.");
     } finally {
       setGoogleSubmitting(false);
@@ -77,12 +77,11 @@ export default function LoginPage() {
 
   return (
     <div className="hero min-h-[82vh] py-12 px-4 sm:px-6 lg:px-8">
-      {/* DaisyUI Hero Content: Hero with Form */}
       <div className="hero-content flex-col lg:flex-row-reverse w-full max-w-5xl gap-12 lg:gap-16 items-center">
         {/* Narrative / Context Column */}
         <div className="text-center lg:text-left max-w-lg space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
             <span>Community Authentication Portal</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
@@ -94,11 +93,11 @@ export default function LoginPage() {
 
           <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
             <div className="p-4 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 backdrop-blur-sm">
-              <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">14.8k+</p>
+              <p className="text-2xl font-black text-indigo-600 dark:text-indigo-400">14.8k+</p>
               <p className="text-xs text-slate-500 font-medium">Volunteers Mobilized</p>
             </div>
             <div className="p-4 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 backdrop-blur-sm">
-              <p className="text-2xl font-black text-teal-600 dark:text-teal-400">100%</p>
+              <p className="text-2xl font-black text-amber-500 dark:text-amber-400">100%</p>
               <p className="text-xs text-slate-500 font-medium">Verified Local Drives</p>
             </div>
           </div>
@@ -106,10 +105,10 @@ export default function LoginPage() {
 
         {/* Form Card Container */}
         <div className="card w-full max-w-md shrink-0 bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6">
-          {/* Header */}
+          {/* Header with Custom Logo */}
           <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white mx-auto shadow-md shadow-emerald-500/25">
-              <HeartHandshake className="w-7 h-7" />
+            <div className="flex justify-center mb-1">
+              <Logo size="md" showSubtitle={false} href="/" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Welcome Back
@@ -119,7 +118,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Email/Password Form (Specification Requirement 1) */}
+          {/* Email/Password Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* 1. Email field */}
             <div className="space-y-1.5">
@@ -131,7 +130,7 @@ export default function LoginPage() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Mail className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <Mail className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 <input
                   id="login-email"
@@ -141,7 +140,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all shadow-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 text-sm transition-all shadow-xs"
                 />
               </div>
             </div>
@@ -156,7 +155,7 @@ export default function LoginPage() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Lock className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <Lock className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 <input
                   id="login-password"
@@ -166,7 +165,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all shadow-sm"
+                  className="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 text-sm transition-all shadow-xs"
                 />
                 <button
                   type="button"
@@ -187,7 +186,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-60 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer mt-2"
+              className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] disabled:opacity-60 transition-all shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 ring-1 ring-white/15 cursor-pointer mt-2"
             >
               {submitting ? (
                 <>
@@ -208,16 +207,16 @@ export default function LoginPage() {
             Or continue with
           </div>
 
-          {/* 3. Google Sign-In Button (Specification Requirement 3) */}
+          {/* Google Sign-In Button */}
           <div>
             <button
               onClick={handleGoogleLogin}
               disabled={googleSubmitting}
               type="button"
-              className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-semibold shadow-sm hover:shadow hover:-translate-y-0.5 cursor-pointer"
+              className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-semibold shadow-xs hover:shadow hover:-translate-y-0.5 cursor-pointer"
             >
               {googleSubmitting ? (
-                <span className="loading loading-spinner loading-xs text-primary" />
+                <span className="loading loading-spinner loading-xs text-indigo-600" />
               ) : (
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
@@ -242,12 +241,12 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* 4. Link that redirects to Register page (Specification Requirement 4) */}
+          {/* Link to Register page */}
           <p className="text-center text-sm text-slate-500 dark:text-slate-400 pt-2">
             Don&apos;t have an account yet?{" "}
             <Link
               href="/register"
-              className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-bold inline-flex items-center gap-1 hover:underline"
+              className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-bold inline-flex items-center gap-1 hover:underline"
             >
               <span>Register here</span>
               <ArrowRight className="w-3.5 h-3.5" />

@@ -80,6 +80,11 @@ export default function CreateEventPage() {
       return;
     }
 
+    if (thumbnail.startsWith("data:") && thumbnail.length > 2 * 1024 * 1024) {
+      toast.error("Image file is too large for web upload. Please select a smaller photo or provide an image link.");
+      return;
+    }
+
     // Strict Future Date validation: Past date rejected!
     const selectedTime = new Date(eventDate).getTime();
     const now = new Date().getTime();
@@ -128,7 +133,7 @@ export default function CreateEventPage() {
             <li>
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 hover:text-emerald-600 dark:hover:text-emerald-400"
+                className="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
               >
                 <Home className="w-4 h-4" />
                 <span>Home</span>
@@ -137,7 +142,7 @@ export default function CreateEventPage() {
             <li>
               <Link
                 href="/manage-events"
-                className="hover:text-emerald-600 dark:hover:text-emerald-400"
+                className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
               >
                 Organizer Portal
               </Link>
@@ -150,8 +155,8 @@ export default function CreateEventPage() {
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl p-8 sm:p-12 space-y-8">
           {/* Header */}
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>Organizer Portal</span>
             </div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -176,7 +181,7 @@ export default function CreateEventPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Winter Clothes Distribution – Mirpur 10, Dhaka"
-                className="input input-bordered w-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500"
               />
             </div>
 
@@ -184,13 +189,13 @@ export default function CreateEventPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                  <Tag className="w-3.5 h-3.5 text-emerald-500" />
+                  <Tag className="w-3.5 h-3.5 text-indigo-500" />
                   <span>Event Category *</span>
                 </label>
                 <select
                   value={eventType}
                   onChange={(e) => setEventType(e.target.value)}
-                  className="select select-bordered w-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white cursor-pointer"
+                  className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500"
                   required
                 >
                   {EVENT_TYPES.map((type) => (
@@ -203,7 +208,7 @@ export default function CreateEventPage() {
 
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-emerald-500" />
+                  <Calendar className="w-3.5 h-3.5 text-indigo-500" />
                   <span>Scheduled Date *</span>
                 </label>
                 <input
@@ -212,7 +217,7 @@ export default function CreateEventPage() {
                   min={minDate}
                   value={eventDate}
                   onChange={(e) => setEventDate(e.target.value)}
-                  className="input input-bordered w-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                  className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500"
                 />
               </div>
             </div>
@@ -220,7 +225,7 @@ export default function CreateEventPage() {
             {/* Location */}
             <div className="space-y-1.5">
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+                <MapPin className="w-3.5 h-3.5 text-indigo-500" />
                 <span>Location *</span>
               </label>
               <input
@@ -230,21 +235,21 @@ export default function CreateEventPage() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Mohammadpur Town Hall, Dhaka"
-                className="input input-bordered w-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500"
               />
             </div>
 
             {/* Thumbnail Banner */}
             <div className="space-y-2">
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                <ImageIcon className="w-3.5 h-3.5 text-emerald-500" />
+                <ImageIcon className="w-3.5 h-3.5 text-indigo-500" />
                 <span>Banner Image *</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors text-center">
-                    <Upload className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mb-1" />
+                  <label className="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors text-center">
+                    <Upload className="w-5 h-5 text-indigo-600 dark:text-indigo-400 mb-1" />
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       {compressing ? "Optimizing image..." : "Upload from Computer"}
                     </span>
@@ -316,7 +321,7 @@ export default function CreateEventPage() {
               <button
                 type="submit"
                 disabled={submitting || compressing}
-                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl text-base font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-60 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl text-base font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] disabled:opacity-60 transition-all shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 ring-1 ring-white/15 cursor-pointer"
               >
                 {submitting ? (
                   <>

@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { HeartHandshake, MapPin, Mail, Phone, Heart } from "lucide-react";
+import Logo from "./Logo";
+import { MapPin, Mail, Phone, Heart } from "lucide-react";
 
 // Modern SVG for X (formerly Twitter)
 function XIcon({ className }: { className?: string }) {
@@ -25,21 +26,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           {/* Brand & Mission (Spans 2 columns) */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-3 inline-flex">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/25">
-                <HeartHandshake className="w-5 h-5" />
-              </div>
-              <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-                Care<span className="text-emerald-600 dark:text-emerald-400">Sphere</span>
-              </span>
-            </Link>
+            <Logo size="md" showSubtitle={false} href="/" />
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
               CareSphere is a community-driven social development and volunteer mobilization
               platform. We connect passionate citizens to grassroots causes—from winter clothes
               distribution and clean-up drives to healthcare access across Bangladesh and beyond.
             </p>
             <div className="flex items-center gap-3 pt-2">
-              {/* New X Logo (replacing old Twitter bird) */}
+              {/* New X Logo */}
               <a
                 href="https://x.com"
                 target="_blank"
@@ -98,22 +92,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
+                <Link href="/" className="link link-hover hover:text-indigo-600 dark:hover:text-indigo-400">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/upcoming-events" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
+                <Link href="/upcoming-events" className="link link-hover hover:text-indigo-600 dark:hover:text-indigo-400">
                   Upcoming Events
                 </Link>
               </li>
               <li>
-                <Link href="/create-event" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
+                <Link href="/create-event" className="link link-hover hover:text-indigo-600 dark:hover:text-indigo-400">
                   Host an Event
                 </Link>
               </li>
               <li>
-                <Link href="/manage-events" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
+                <Link href="/manage-events" className="link link-hover hover:text-indigo-600 dark:hover:text-indigo-400">
                   Manage Events
                 </Link>
               </li>
@@ -127,22 +121,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/upcoming-events?type=Donation Drive" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
+                <Link href="/upcoming-events?type=Donation Drive" className="link link-hover hover:text-indigo-600 dark:hover:text-indigo-400">
                   Winter Clothes Drive
                 </Link>
               </li>
               <li>
-                <Link href="/upcoming-events?type=Clean-up" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
+                <Link href="/upcoming-events?type=Clean-up" className="link link-hover hover:text-indigo-600 dark:hover:text-indigo-400">
                   City Clean-up
                 </Link>
               </li>
               <li>
-                <Link href="/upcoming-events?type=Plantation" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
+                <Link href="/upcoming-events?type=Plantation" className="link link-hover hover:text-indigo-600 dark:hover:text-indigo-400">
                   Tree Plantation
                 </Link>
               </li>
               <li>
-                <Link href="/upcoming-events?type=Healthcare" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
+                <Link href="/upcoming-events?type=Healthcare" className="link link-hover hover:text-indigo-600 dark:hover:text-indigo-400">
                   Healthcare & Medical
                 </Link>
               </li>
@@ -156,15 +150,15 @@ export default function Footer() {
             </h4>
             <div className="space-y-2.5 text-sm">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
                 <span>Mirpur DOHS, Dhaka 1216, Bangladesh</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <Mail className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
                 <span>support@caresphere.org</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <Phone className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
                 <span>+880 1711-234567</span>
               </div>
             </div>

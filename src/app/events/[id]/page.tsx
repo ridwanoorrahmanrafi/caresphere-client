@@ -1,36 +1,35 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import { SocialEvent, Attendee } from "../../../types";
+import EventCountdown from "../../../components/EventCountdown";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import confetti from "canvas-confetti";
-import EventCountdown from "../../../components/EventCountdown";
 import {
   Calendar,
-  Home,
   MapPin,
-  Tag,
-  ArrowLeft,
-  CheckCircle2,
   Users,
+  CheckCircle2,
+  ArrowLeft,
+  Tag,
+  Home,
   CalendarPlus,
   Share2,
   HeartHandshake,
   Clock,
-  Flag,
 } from "lucide-react";
 import { API_BASE_URL } from "@/config/api";
 
 const eventTypeColors: Record<string, string> = {
   "Donation Drive": "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-  "Clean-up": "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-  "Plantation": "bg-teal-100 text-teal-800 dark:bg-teal-950/60 dark:text-teal-300 border-teal-200 dark:border-teal-800",
+  "Clean-up": "bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800",
+  "Plantation": "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
   "Healthcare": "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-  "Education": "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
+  "Education": "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800",
   "Food Relief": "bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300 border-orange-200 dark:border-orange-800",
   "Disaster Relief": "bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300 border-red-200 dark:border-red-800",
   "Other": "bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
@@ -51,38 +50,47 @@ export default function EventDetailsPage() {
   const [joining, setJoining] = useState(false);
   const [activeTab, setActiveTab] = useState<"roadmap" | "volunteers">("roadmap");
 
-  const fetchEventDetails = async () => {
-    try {
-      setLoading(true);
-      const res = await authFetch(`${API_BASE_URL}/events/${eventId}`);
-      const data = await res.json();
-      if (data.success && data.event) {
-        setEvent(data.event);
-        setAttendees(data.attendees || []);
-        setAttendeesCount(data.attendeesCount || 0);
-        setIsJoined(data.isUserJoined || false);
-      } else {
-        toast.error(data.message || "Event not found");
-      }
-    } catch (err) {
-      console.error("Error fetching event details:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    async function fetchEventDetails() {
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_BASE_URL}/events/${eventId}`);
+        const data = await res.json();
+
+        if (data.success && data.event) {
+          setEvent(data.event);
+          setAttendeesCount(data.event.attendeesCount || 0);
+
+          // Check if current logged in user has already joined
+          if (Array.isArray(data.event.attendees)) {
+            setAttendees(data.event.attendees);
+            if (user?.email) {
+              const joined = data.event.attendees.some(
+                (a: Attendee) => a.userEmail === user.email
+              );
+              setIsJoined(joined);
+            }
+          }
+        } else {
+          toast.error(data.message || "Failed to load event details");
+        }
+      } catch (err) {
+        console.error("Fetch event details error:", err);
+        toast.error("Network error while loading event details");
+      } finally {
+        setLoading(false);
+      }
+    }
+
     if (eventId) {
       fetchEventDetails();
     }
-  }, [eventId, user]);
+  }, [eventId, user?.email]);
 
   const handleJoinEvent = async () => {
     if (!user) {
-      toast("Please log in to join this social service event as a volunteer.", {
-        icon: "🔐",
-      });
-      router.push("/login");
+      toast("Please login first to volunteer for this event", { icon: "🔐" });
+      router.push(`/login?redirect=/events/${eventId}`);
       return;
     }
 
@@ -103,7 +111,7 @@ export default function EventDetailsPage() {
           particleCount: 80,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ["#059669", "#10b981", "#34d399", "#047857"],
+          colors: ["#4f46e5", "#7c3aed", "#6366f1", "#f59e0b", "#f43f5e"],
         });
         toast.success("RSVP Confirmed! You're officially registered as a volunteer.");
       } else {
@@ -159,7 +167,7 @@ export default function EventDetailsPage() {
       navigator
         .share({
           title: event?.title,
-          text: `Join ${event?.title} on CareSphere!`,
+          text: `Join me at ${event?.title} on CareSphere!`,
           url: window.location.href,
         })
         .catch(() => {});
@@ -171,15 +179,17 @@ export default function EventDetailsPage() {
 
   if (loading) {
     return (
-      <div className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="skeleton h-8 w-48 rounded-xl" />
-        <div className="skeleton h-96 w-full rounded-3xl" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
-            <div className="skeleton h-10 w-3/4 rounded-xl" />
-            <div className="skeleton h-32 w-full rounded-2xl" />
+      <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 animate-pulse">
+        <div className="h-6 w-48 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+        <div className="h-96 w-full bg-slate-200 dark:bg-slate-800 rounded-3xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 space-y-4">
+            <div className="h-10 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-xl" />
+            <div className="h-24 w-full bg-slate-200 dark:bg-slate-800 rounded-xl" />
           </div>
-          <div className="skeleton h-80 w-full rounded-3xl" />
+          <div className="lg:col-span-4">
+            <div className="h-80 w-full bg-slate-200 dark:bg-slate-800 rounded-3xl" />
+          </div>
         </div>
       </div>
     );
@@ -197,7 +207,7 @@ export default function EventDetailsPage() {
         </p>
         <Link
           href="/upcoming-events"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-md shadow-emerald-500/25"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 transition-all shadow-md shadow-indigo-500/25"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Browse Upcoming Events</span>
@@ -208,7 +218,7 @@ export default function EventDetailsPage() {
 
   const badgeStyle =
     eventTypeColors[event.eventType] ||
-    "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800";
+    "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800";
 
   return (
     <div className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -218,7 +228,7 @@ export default function EventDetailsPage() {
           <li>
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 hover:text-emerald-600 dark:hover:text-emerald-400"
+              className="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               <Home className="w-4 h-4" />
               <span>Home</span>
@@ -227,7 +237,7 @@ export default function EventDetailsPage() {
           <li>
             <Link
               href="/upcoming-events"
-              className="hover:text-emerald-600 dark:hover:text-emerald-400"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Upcoming Events
             </Link>
@@ -238,25 +248,26 @@ export default function EventDetailsPage() {
         </ul>
       </div>
 
-      {/* Main Grid: Details Left, Action Card Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Event Overview & Content */}
+        {/* Left Column: Event Hero Image, Content, and Organizer */}
         <div className="lg:col-span-8 space-y-8">
-          {/* Hero Banner */}
-          <div className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800 aspect-video max-h-[460px] w-full">
+          {/* Main Visual Image */}
+          <div className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 shadow-xl max-h-[460px]">
             <img
-              src={event.thumbnail}
+              src={
+                event.thumbnail ||
+                "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80"
+              }
               alt={event.title}
-              className="w-full h-full object-cover"
+              className="w-full h-80 sm:h-[420px] object-cover"
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
                   "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80";
               }}
             />
+            {/* Badges on image */}
             <div className="absolute top-4 left-4 z-10">
-              <span
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border backdrop-blur-md shadow-md ${badgeStyle}`}
-              >
+              <span className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border backdrop-blur-md shadow-sm ${badgeStyle}`}>
                 <Tag className="w-3.5 h-3.5" />
                 <span>{event.eventType}</span>
               </span>
@@ -272,7 +283,7 @@ export default function EventDetailsPage() {
           {/* Event Header Information */}
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
-              <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+              <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-bold">
                 <Calendar className="w-4 h-4" />
                 <span>
                   {new Date(event.eventDate).toLocaleDateString("en-US", {
@@ -300,10 +311,10 @@ export default function EventDetailsPage() {
           </div>
 
           {/* Organizer Card */}
-          <div className="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex items-center justify-between">
+          <div className="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="avatar">
-                <div className="w-14 h-14 rounded-2xl overflow-hidden ring-2 ring-emerald-500/20">
+                <div className="w-14 h-14 rounded-2xl overflow-hidden ring-2 ring-indigo-500/20">
                   <img
                     src={
                       event.creatorPhoto ||
@@ -334,9 +345,9 @@ export default function EventDetailsPage() {
             <button
               type="button"
               onClick={() => setActiveTab("roadmap")}
-              className={`pb-3 px-4 font-bold text-sm inline-flex items-center gap-2 border-b-2 transition-all ${
+              className={`pb-3 px-4 font-bold text-sm inline-flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
                 activeTab === "roadmap"
-                  ? "border-emerald-600 text-emerald-600 dark:text-emerald-400"
+                  ? "border-indigo-600 text-indigo-600 dark:text-indigo-400"
                   : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
               }`}
             >
@@ -347,15 +358,15 @@ export default function EventDetailsPage() {
             <button
               type="button"
               onClick={() => setActiveTab("volunteers")}
-              className={`pb-3 px-4 font-bold text-sm inline-flex items-center gap-2 border-b-2 transition-all ${
+              className={`pb-3 px-4 font-bold text-sm inline-flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
                 activeTab === "volunteers"
-                  ? "border-emerald-600 text-emerald-600 dark:text-emerald-400"
+                  ? "border-indigo-600 text-indigo-600 dark:text-indigo-400"
                   : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
               }`}
             >
               <Users className="w-4 h-4" />
               <span>Registered Volunteers</span>
-              <span className="px-2 py-0.5 rounded-full text-xs bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold">
+              <span className="px-2 py-0.5 rounded-full text-xs bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold">
                 {attendees.length}
               </span>
             </button>
@@ -363,7 +374,7 @@ export default function EventDetailsPage() {
 
           {/* Tab 1: Itinerary */}
           {activeTab === "roadmap" && (
-            <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-6">
               <div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   Day-of-Event Timeline
@@ -373,10 +384,10 @@ export default function EventDetailsPage() {
                 </p>
               </div>
 
-              <div className="space-y-6 relative border-l-2 border-emerald-500/30 ml-4 pl-6">
+              <div className="space-y-6 relative border-l-2 border-indigo-500/30 ml-4 pl-6">
                 <div className="relative">
-                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-emerald-600 ring-4 ring-emerald-100 dark:ring-emerald-950" />
-                  <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-indigo-600 ring-4 ring-indigo-100 dark:ring-indigo-950" />
+                  <p className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
                     08:30 AM
                   </p>
                   <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
@@ -389,8 +400,8 @@ export default function EventDetailsPage() {
                 </div>
 
                 <div className="relative">
-                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-emerald-600 ring-4 ring-emerald-100 dark:ring-emerald-950" />
-                  <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-indigo-600 ring-4 ring-indigo-100 dark:ring-indigo-950" />
+                  <p className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
                     09:15 AM
                   </p>
                   <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
@@ -403,8 +414,8 @@ export default function EventDetailsPage() {
                 </div>
 
                 <div className="relative">
-                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-emerald-600 ring-4 ring-emerald-100 dark:ring-emerald-950" />
-                  <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-indigo-600 ring-4 ring-indigo-100 dark:ring-indigo-950" />
+                  <p className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
                     10:00 AM
                   </p>
                   <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
@@ -417,8 +428,8 @@ export default function EventDetailsPage() {
                 </div>
 
                 <div className="relative">
-                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-emerald-600 ring-4 ring-emerald-100 dark:ring-emerald-950" />
-                  <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-indigo-600 ring-4 ring-indigo-100 dark:ring-indigo-950" />
+                  <p className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
                     01:30 PM
                   </p>
                   <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
@@ -431,8 +442,8 @@ export default function EventDetailsPage() {
                 </div>
 
                 <div className="relative">
-                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-emerald-600 ring-4 ring-emerald-100 dark:ring-emerald-950" />
-                  <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-indigo-600 ring-4 ring-indigo-100 dark:ring-indigo-950" />
+                  <p className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
                     03:00 PM
                   </p>
                   <h4 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
@@ -449,7 +460,7 @@ export default function EventDetailsPage() {
 
           {/* Tab 2: Registered Volunteers */}
           {activeTab === "volunteers" && (
-            <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-6">
               <div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   Registered Volunteers ({attendees.length})
@@ -464,10 +475,10 @@ export default function EventDetailsPage() {
                   {attendees.map((attendee, idx) => (
                     <div
                       key={idx}
-                      className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800 shadow-sm flex items-center gap-3 hover:border-emerald-500/40 transition-colors"
+                      className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800/90 shadow-xs flex items-center gap-3 hover:border-indigo-500/40 transition-colors"
                     >
                       <div className="avatar">
-                        <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-emerald-500/20 shrink-0">
+                        <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-indigo-500/20 shrink-0">
                           <img
                             src={
                               attendee.userPhoto ||
@@ -479,10 +490,12 @@ export default function EventDetailsPage() {
                         </div>
                       </div>
                       <div className="overflow-hidden min-w-0">
-                        <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                        <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
                           {attendee.userName}
                         </p>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{attendee.userEmail}</p>
+                        <p className="text-[10px] font-medium text-slate-600 dark:text-slate-400 truncate">
+                          {attendee.userEmail}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -526,13 +539,13 @@ export default function EventDetailsPage() {
             <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <div className="flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400">
                 <span>Volunteer Mobilization</span>
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                <span className="font-bold text-indigo-600 dark:text-indigo-400">
                   {attendeesCount} / {Math.max(attendeesCount, 25)}
                 </span>
               </div>
               <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-indigo-500 to-violet-500 h-2 rounded-full transition-all duration-500"
                   style={{
                     width: `${Math.min(
                       100,
@@ -549,13 +562,13 @@ export default function EventDetailsPage() {
             {/* Action Buttons */}
             {isJoined ? (
               <div className="space-y-3 pt-2">
-                <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                   <div>
-                    <p className="text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                    <p className="text-xs font-bold text-indigo-900 dark:text-indigo-200">
                       You&apos;re Attending!
                     </p>
-                    <p className="text-[11px] text-emerald-700 dark:text-emerald-300">
+                    <p className="text-[11px] text-indigo-700 dark:text-indigo-300">
                       RSVP confirmed in CareSphere registry.
                     </p>
                   </div>
@@ -574,7 +587,7 @@ export default function EventDetailsPage() {
                 <button
                   onClick={handleJoinEvent}
                   disabled={joining}
-                  className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl text-base font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-60 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl text-base font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] disabled:opacity-60 transition-all shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 ring-1 ring-white/15 cursor-pointer"
                 >
                   {joining ? (
                     <>
@@ -611,7 +624,7 @@ export default function EventDetailsPage() {
                 rel="noreferrer"
                 className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-center"
               >
-                <CalendarPlus className="w-3.5 h-3.5 text-emerald-600" />
+                <CalendarPlus className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                 <span>Add to Calendar</span>
               </a>
             </div>
