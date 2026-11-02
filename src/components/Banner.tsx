@@ -135,24 +135,24 @@ export default function Banner() {
               </div>
 
               {/* Floating Badge 1: Community Verified */}
-              <div className="absolute -top-4 -left-4 sm:-left-6 p-3 rounded-2xl glass border border-slate-200/80 dark:border-slate-800 shadow-xl flex items-center gap-3 animate-bounce [animation-duration:4s]">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                  <ShieldCheck className="w-6 h-6" />
+              <div className="absolute -top-4 left-2 sm:-left-6 p-2.5 sm:p-3 rounded-2xl glass border border-slate-200/80 dark:border-slate-800 shadow-xl flex items-center gap-2.5 sm:gap-3 animate-bounce [animation-duration:4s]">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-900 dark:text-white">100% Transparent</p>
-                  <p className="text-[11px] text-slate-500">Zero Intermediaries</p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-500">Zero Intermediaries</p>
                 </div>
               </div>
 
               {/* Floating Badge 2: Direct Impact */}
-              <div className="absolute -bottom-4 -right-4 sm:-right-6 p-3 rounded-2xl glass border border-slate-200/80 dark:border-slate-800 shadow-xl flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-950/70 text-teal-600 dark:text-teal-400 flex items-center justify-center">
-                  <Users className="w-6 h-6" />
+              <div className="absolute -bottom-4 right-2 sm:-right-6 p-2.5 sm:p-3 rounded-2xl glass border border-slate-200/80 dark:border-slate-800 shadow-xl flex items-center gap-2.5 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-100 dark:bg-teal-950/70 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+                  <Users className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-900 dark:text-white">Join as Volunteer</p>
-                  <p className="text-[11px] text-slate-500">1-Click RSVP Tracking</p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-500">1-Click RSVP Tracking</p>
                 </div>
               </div>
             </div>

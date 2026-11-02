@@ -118,23 +118,23 @@ export default function UpcomingEventsPage() {
       {/* Filter & Search Bar */}
       <div className="space-y-4 max-w-4xl mx-auto">
         {/* DaisyUI Join Component: Grouping Search Input, Category Select, and Search Button */}
-        <div className="join join-vertical sm:join-horizontal w-full shadow-sm">
+        <div className="join join-vertical sm:join-horizontal w-full shadow-md rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
           <div className="grow">
-            <label className="input input-lg input-primary join-item w-full flex items-center border-slate-200 dark:border-slate-800">
-              <Search className="w-5 h-5 opacity-50 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <label className="input input-lg input-ghost join-item w-full flex items-center border-none bg-transparent focus-within:outline-none">
+              <Search className="w-5 h-5 opacity-60 shrink-0 text-emerald-600 dark:text-emerald-400" />
               <input
                 ref={searchInputRef}
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search events by title, keyword, or location (e.g. Mirpur, Clean-up)..."
-                className="grow text-sm"
+                className="grow text-sm pl-2.5 bg-transparent focus:outline-none text-slate-900 dark:text-white"
               />
               {searchQuery ? (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="btn btn-ghost btn-xs text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   Clear
                 </button>
@@ -151,7 +151,7 @@ export default function UpcomingEventsPage() {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="select select-lg join-item bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-semibold shrink-0"
+            className="select select-lg join-item bg-slate-50 dark:bg-slate-800/80 border-0 sm:border-l border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-semibold shrink-0 cursor-pointer focus:outline-none"
             aria-label="Filter events by category"
           >
             {CATEGORIES.map((cat) => (
@@ -161,73 +161,50 @@ export default function UpcomingEventsPage() {
             ))}
           </select>
 
-          <div className="indicator shrink-0">
-            <span className="indicator-item badge badge-primary badge-xs font-bold text-[9px]">
-              Live
-            </span>
-            <button
-              type="button"
-              onClick={() => fetchEvents()}
-              className="btn btn-lg btn-primary join-item px-6 w-full sm:w-auto font-bold"
-            >
-              Search
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => fetchEvents()}
+            className="join-item px-7 py-3 font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+          >
+            <Search className="w-4 h-4" />
+            <span>Search</span>
+          </button>
         </div>
 
-        {/* DaisyUI Filter Component (HTML Form with Radio Buttons and Reset Button) */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
-          <div className="flex items-center gap-2">
+        {/* Quick Category Tabs Bar with Smooth Horizontal Scrolling */}
+        <div className="flex items-center justify-between gap-3 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-x-auto">
+          <div className="flex items-center gap-1.5 shrink-0 px-2 text-slate-500 dark:text-slate-400">
             <Filter className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Interactive Filter:
-            </span>
+            <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">Category:</span>
           </div>
 
-          {/* DaisyUI Filter Component: Selecting an option hides others and reveals reset button */}
-          <form
-            className="filter flex-wrap"
-            onReset={(e) => {
-              e.preventDefault();
-              setSelectedCategory("All");
-            }}
-          >
-            <input
-              className="btn btn-square btn-sm border-slate-300 dark:border-slate-700 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
-              type="reset"
-              value="×"
-              title="Reset Filter"
-            />
-            {CATEGORIES.filter((c) => c !== "All").map((cat) => (
-              <input
-                key={cat}
-                className="btn btn-sm btn-outline text-xs"
-                type="radio"
-                name="event-category-filter"
-                checked={selectedCategory === cat}
-                onChange={() => setSelectedCategory(cat)}
-                aria-label={cat}
-              />
-            ))}
-          </form>
-
-          {/* DaisyUI Tabs Bar */}
-          <div role="tablist" className="tabs tabs-box tabs-xs overflow-x-auto p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
-                role="tab"
+                type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`tab font-semibold transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                   selectedCategory === cat
-                    ? "tab-active"
-                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-emerald-600 text-white shadow-sm shadow-emerald-500/25"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
                 }`}
               >
                 {cat}
               </button>
             ))}
           </div>
+
+          {selectedCategory !== "All" && (
+            <button
+              type="button"
+              onClick={() => setSelectedCategory("All")}
+              className="px-2.5 py-1 text-[11px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg shrink-0 transition-colors cursor-pointer"
+              title="Reset Filter"
+            >
+              Reset
+            </button>
+          )}
         </div>
       </div>
 
@@ -286,7 +263,7 @@ export default function UpcomingEventsPage() {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
                     className={`join-item btn btn-sm ${
-                      currentPage === pageNumber ? "btn-active" : "btn-outline"
+                      currentPage === pageNumber ? "btn-active !bg-emerald-600 !text-white !border-emerald-600" : "btn-outline"
                     }`}
                   >
                     {pageNumber}

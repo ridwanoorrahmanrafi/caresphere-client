@@ -88,7 +88,7 @@ export default function EventCard({ event }: EventCardProps) {
       <span className="indicator-item indicator-top indicator-end badge badge-success badge-sm shadow-md font-bold z-20">
         Verified
       </span>
-      <div className="card card-border group rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full w-full">
+      <div className="card card-border group rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full w-full">
       {/* DaisyUI Hover Gallery in a Card */}
       <figure
         className="hover-gallery relative w-full h-52 overflow-hidden bg-slate-100 dark:bg-slate-800 m-0"
@@ -199,7 +199,7 @@ export default function EventCard({ event }: EventCardProps) {
         <div className="card-actions mt-auto">
           <Link
             href={`/events/${event._id}`}
-            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-colors shadow-sm shadow-emerald-500/20 group-hover:shadow-md"
+            className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-all shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30 group-hover:-translate-y-0.5"
           >
             <span>View Event</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

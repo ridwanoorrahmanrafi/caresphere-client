@@ -2,7 +2,7 @@ import React from "react";
 
 export default function SkeletonCard() {
   return (
-    <div className="card card-border rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm flex flex-col h-full">
+    <div className="card card-border rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm flex flex-col h-full">
       {/* Image Skeleton (DaisyUI Skeleton) */}
       <div className="skeleton w-full h-52 rounded-none" />
 
@@ -33,7 +33,7 @@ export default function SkeletonCard() {
         </div>
 
         {/* Button Skeleton */}
-        <div className="skeleton h-10 w-full rounded-xl mt-4" />
+        <div className="skeleton h-11 w-full rounded-2xl mt-4" />
       </div>
     </div>
   );

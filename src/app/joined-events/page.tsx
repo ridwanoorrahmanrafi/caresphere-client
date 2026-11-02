@@ -424,7 +424,7 @@ export default function JoinedEventsPage() {
             </p>
             <Link
               href="/upcoming-events"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-all shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5"
             >
               <span>Explore Upcoming Events</span>
               <ArrowRight className="w-4 h-4" />
