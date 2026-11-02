@@ -98,22 +98,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                <Link href="/" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/upcoming-events" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                <Link href="/upcoming-events" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
                   Upcoming Events
                 </Link>
               </li>
               <li>
-                <Link href="/create-event" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                <Link href="/create-event" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
                   Host an Event
                 </Link>
               </li>
               <li>
-                <Link href="/manage-events" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                <Link href="/manage-events" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
                   Manage Events
                 </Link>
               </li>
@@ -127,22 +127,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/upcoming-events?type=Donation Drive" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                <Link href="/upcoming-events?type=Donation Drive" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
                   Winter Clothes Drive
                 </Link>
               </li>
               <li>
-                <Link href="/upcoming-events?type=Clean-up" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                <Link href="/upcoming-events?type=Clean-up" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
                   City Clean-up
                 </Link>
               </li>
               <li>
-                <Link href="/upcoming-events?type=Plantation" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                <Link href="/upcoming-events?type=Plantation" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
                   Tree Plantation
                 </Link>
               </li>
               <li>
-                <Link href="/upcoming-events?type=Healthcare" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                <Link href="/upcoming-events?type=Healthcare" className="link link-hover hover:text-emerald-600 dark:hover:text-emerald-400">
                   Healthcare & Medical
                 </Link>
               </li>
@@ -172,8 +172,20 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>© 2026 CareSphere Inc. All rights reserved.</p>
+
+          {/* DaisyUI Kbd Shortcut Bar */}
+          <div className="hidden lg:flex items-center gap-3 font-mono text-[11px] text-slate-400">
+            <span className="flex items-center gap-1">
+              Search: <kbd className="kbd kbd-xs">Ctrl</kbd> + <kbd className="kbd kbd-xs">K</kbd>
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1">
+              Close modal: <kbd className="kbd kbd-xs">ESC</kbd>
+            </span>
+          </div>
+
           <p className="flex items-center gap-1.5">
             Crafted with <Heart className="w-3.5 h-3.5 text-rose-500 fill-current" /> for social changemakers
           </p>

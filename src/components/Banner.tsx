@@ -4,12 +4,13 @@ import { ArrowRight, Sparkles, ShieldCheck, Users, CalendarHeart } from "lucide-
 
 export default function Banner() {
   return (
-    <section className="relative overflow-hidden pt-8 pb-20 lg:pt-14 lg:pb-28">
+    <section className="hero relative overflow-hidden pt-8 pb-20 lg:pt-14 lg:pb-28">
       {/* Decorative gradient glow backgrounds */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-tr from-emerald-500/15 via-teal-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      {/* DaisyUI Hero Content Container */}
+      <div className="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full p-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
           {/* Left Column: Headline & Action */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             {/* Pill Badge */}
@@ -18,11 +19,24 @@ export default function Banner() {
               <span>Community-Driven Social Development Platform</span>
             </div>
 
-            {/* Main Heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.12]">
+            {/* Main Heading with DaisyUI Text Rotate Component */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15]">
               Turn Empathy into{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400">
-                Action.
+              <span className="text-rotate duration-6000 align-baseline">
+                <span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400">
+                    Action.
+                  </span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400">
+                    Impact.
+                  </span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400">
+                    Change.
+                  </span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400">
+                    Hope.
+                  </span>
+                </span>
               </span>{" "}
               Unite for Your Community.
             </h1>
@@ -71,24 +85,52 @@ export default function Banner() {
           {/* Right Column: Visual Composition with floating cards */}
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md lg:max-w-none">
-              {/* Main Visual Image */}
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800">
-                <img
-                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80"
-                  alt="Community Volunteers Distributing Winter Aid"
-                  className="w-full h-80 sm:h-96 object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
-                <div className="absolute bottom-5 left-5 right-5 text-white">
-                  <span className="inline-block px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-500 text-white uppercase tracking-wider mb-1">
-                    Featured Initiative
+              {/* DaisyUI Stack Component: Stacked Community Initiative Cards */}
+              <div className="stack stack-bottom w-full cursor-pointer">
+                {/* Main Visual Image with DaisyUI Hover 3D & Aura Highlight */}
+                <div className="hover-3d aura aura-glow rounded-3xl w-full">
+                  <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800">
+                    <img
+                      src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80"
+                      alt="Community Volunteers Distributing Winter Aid"
+                      className="w-full h-80 sm:h-96 object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-5 left-5 right-5 text-white">
+                      <span className="badge badge-xs badge-success uppercase tracking-wider mb-1 font-bold">
+                        Featured Initiative
+                      </span>
+                      <p className="text-base font-bold leading-tight drop-shadow-sm">
+                        Winter Clothes Distribution for Underprivileged Children
+                      </p>
+                      <p className="text-xs text-slate-200 mt-1 flex items-center gap-1">
+                        <span>Mirpur 10, Dhaka</span> • <span>Upcoming This Weekend</span>
+                      </p>
+                    </div>
+                  </div>
+                  {/* 8 hover zones needed for DaisyUI 3D effect */}
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+
+                {/* Stack Card 2: Secondary initiative background card */}
+                <div className="rounded-3xl border border-emerald-300/80 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 shadow-xl h-80 sm:h-96 flex items-end p-5">
+                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
+                    🌲 Urban Afforestation & Clean-up Drive
                   </span>
-                  <p className="text-base font-bold leading-tight drop-shadow-sm">
-                    Winter Clothes Distribution for Underprivileged Children
-                  </p>
-                  <p className="text-xs text-slate-200 mt-1 flex items-center gap-1">
-                    <span>Mirpur 10, Dhaka</span> • <span>Upcoming This Weekend</span>
-                  </p>
+                </div>
+
+                {/* Stack Card 3: Tertiary initiative background card */}
+                <div className="rounded-3xl border border-teal-300/80 dark:border-teal-800 bg-teal-50 dark:bg-teal-950/40 shadow-lg h-80 sm:h-96 flex items-end p-5">
+                  <span className="text-xs font-bold text-teal-800 dark:text-teal-300">
+                    🩺 Free Child Health Checkup Camp
+                  </span>
                 </div>
               </div>
 

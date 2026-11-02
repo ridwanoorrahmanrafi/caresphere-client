@@ -12,10 +12,10 @@ import {
   Image as ImageIcon,
   UserPlus,
   HeartHandshake,
-  Loader2,
   ArrowRight,
   Check,
   AlertCircle,
+  Sparkles,
 } from "lucide-react";
 
 export default function RegisterPage() {
@@ -92,6 +92,23 @@ export default function RegisterPage() {
     }
   };
 
+  const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("File size exceeds 2MB limit.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setPhotoURL(reader.result);
+        toast.success("Profile photo uploaded!");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleGoogleLogin = async () => {
     try {
       setGoogleSubmitting(true);
@@ -110,129 +127,198 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl transition-all">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white mx-auto shadow-md shadow-emerald-500/25">
-            <HeartHandshake className="w-7 h-7" />
+    <div className="hero min-h-[85vh] py-12 px-4 sm:px-6 lg:px-8">
+      {/* DaisyUI Hero Content: Hero with Form */}
+      <div className="hero-content flex-col lg:flex-row-reverse w-full max-w-5xl gap-12 lg:gap-16 items-center">
+        {/* Narrative / Context Column */}
+        <div className="text-center lg:text-left max-w-lg space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span>Join CareSphere Community</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            Create an Account
+          <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+            Empower Change in Your City.
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Join the community to volunteer, organize drives, and make a real difference
+          <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+            Create an account to mobilize neighborhood drives, join verified volunteer initiatives, connect with local organizers, and track your social impact in real time.
           </p>
+
+          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+            <div className="p-4 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 backdrop-blur-sm">
+              <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">100% Free</p>
+              <p className="text-xs text-slate-500 font-medium">Community Access</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 backdrop-blur-sm">
+              <p className="text-2xl font-black text-teal-600 dark:text-teal-400">Instant RSVP</p>
+              <p className="text-xs text-slate-500 font-medium">Verified Volunteer Seats</p>
+            </div>
+          </div>
         </div>
 
-        {/* Registration Form */}
+        {/* Form Card Container */}
+        <div className="card w-full max-w-md shrink-0 bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white mx-auto shadow-md shadow-emerald-500/25">
+              <HeartHandshake className="w-7 h-7" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              Create an Account
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Join the community to volunteer, organize drives, and make a real difference
+            </p>
+          </div>
+
+        {/* Registration Form with DaisyUI Fieldset Component */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 1. Name */}
-          <div className="space-y-1">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Full Name
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <UserIcon className="w-4 h-4" />
-              </div>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Tanvir Ahmed"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-              />
-            </div>
-          </div>
+          {/* Fieldset 1: Volunteer Identity */}
+          <fieldset className="fieldset bg-slate-50/50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl p-4 gap-3.5">
+            <legend className="fieldset-legend text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              Volunteer Identity
+            </legend>
 
-          {/* 2. Email */}
-          <div className="space-y-1">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Email Address
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Mail className="w-4 h-4" />
-              </div>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tanvir@example.com"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-              />
-            </div>
-          </div>
-
-          {/* 3. Photo URL */}
-          <div className="space-y-1">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Profile Photo URL
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <ImageIcon className="w-4 h-4" />
-              </div>
-              <input
-                type="url"
-                value={photoURL}
-                onChange={(e) => setPhotoURL(e.target.value)}
-                placeholder="https://example.com/photo.jpg (optional)"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-              />
-            </div>
-          </div>
-
-          {/* 4. Password */}
-          <div className="space-y-1">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Lock className="w-4 h-4" />
-              </div>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Create a strong password"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-              />
+            {/* 1. Name with DaisyUI Input Wrapper & Validator */}
+            <div className="space-y-1">
+              <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Full Name *
+              </span>
+              <label className="input input-md input-primary validator w-full">
+                <UserIcon className="w-4 h-4 opacity-50 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Tanvir Ahmed"
+                  className="grow"
+                />
+              </label>
+              <div className="validator-hint hidden">Please enter your full name</div>
             </div>
 
-            {/* Visual Password Requirement Hints */}
-            <div className="pt-2 grid grid-cols-3 gap-2 text-[11px]">
-              <div
-                className={`flex items-center gap-1 font-medium transition-colors ${
-                  hasUpperCase ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"
-                }`}
-              >
-                {hasUpperCase ? <Check className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                <span>1 Uppercase</span>
-              </div>
-              <div
-                className={`flex items-center gap-1 font-medium transition-colors ${
-                  hasLowerCase ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"
-                }`}
-              >
-                {hasLowerCase ? <Check className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                <span>1 Lowercase</span>
-              </div>
-              <div
-                className={`flex items-center gap-1 font-medium transition-colors ${
-                  hasMinLength ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"
-                }`}
-              >
-                {hasMinLength ? <Check className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                <span>6+ Chars</span>
+            {/* 2. Email with DaisyUI Input Wrapper & Validator */}
+            <div className="space-y-1">
+              <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Email Address *
+              </span>
+              <label className="input input-md input-primary validator w-full">
+                <Mail className="w-4 h-4 opacity-50 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="tanvir@example.com"
+                  className="grow"
+                />
+              </label>
+              <div className="validator-hint hidden">Please enter a valid email address (e.g. tanvir@example.com)</div>
+            </div>
+
+            {/* 3. Photo (DaisyUI File Input or URL) */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Profile Photo (Optional)
+              </label>
+              <div className="space-y-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoFileChange}
+                  className="file-input file-input-primary file-input-xs sm:file-input-sm w-full"
+                />
+                <label className="input input-sm input-primary w-full flex items-center gap-2">
+                  <ImageIcon className="w-3.5 h-3.5 opacity-50 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <input
+                    type="url"
+                    value={photoURL}
+                    onChange={(e) => setPhotoURL(e.target.value)}
+                    placeholder="Or enter image URL"
+                    className="grow"
+                  />
+                </label>
               </div>
             </div>
-          </div>
+
+            <p className="label text-[11px] text-slate-500 dark:text-slate-400">
+              Your photo and name will appear when joining initiatives and organizing events.
+            </p>
+          </fieldset>
+
+          {/* Fieldset 2: Security Credentials */}
+          <fieldset className="fieldset bg-slate-50/50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl p-4 gap-3.5">
+            <legend className="fieldset-legend text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              Security Credentials
+            </legend>
+
+            {/* 4. Password with DaisyUI Input Wrapper & Validator */}
+            <div className="space-y-1">
+              <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Password *
+              </span>
+              <label className="input input-md input-primary validator w-full">
+                <Lock className="w-4 h-4 opacity-50 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  pattern="(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Create a strong password"
+                  title="Must be at least 6 characters, including at least one uppercase and one lowercase letter"
+                  className="grow"
+                />
+              </label>
+              <div className="validator-hint hidden">Must contain 6+ chars with uppercase & lowercase letters</div>
+
+              {/* Visual Password Requirement Hints */}
+              <div className="pt-2 grid grid-cols-3 gap-2 text-[11px]">
+                <div
+                  className={`flex items-center gap-1 font-medium transition-colors ${
+                    hasUpperCase ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"
+                  }`}
+                >
+                  {hasUpperCase ? <Check className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+                  <span>1 Uppercase</span>
+                </div>
+                <div
+                  className={`flex items-center gap-1 font-medium transition-colors ${
+                    hasLowerCase ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"
+                  }`}
+                >
+                  {hasLowerCase ? <Check className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+                  <span>1 Lowercase</span>
+                </div>
+                <div
+                  className={`flex items-center gap-1 font-medium transition-colors ${
+                    hasMinLength ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"
+                  }`}
+                >
+                  {hasMinLength ? <Check className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+                  <span>6+ Chars</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Terms Agreement (DaisyUI Checkbox & Validator Component) */}
+            <div className="pt-1">
+              <label className="label cursor-pointer flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300">
+                <input
+                  type="checkbox"
+                  required
+                  defaultChecked
+                  className="checkbox checkbox-primary validator checkbox-sm mt-0.5"
+                  title="Required"
+                />
+                <span>
+                  I agree to the <span className="font-semibold text-emerald-600 dark:text-emerald-400">Volunteer Code of Conduct</span> and community terms of service.
+                </span>
+              </label>
+              <p className="validator-hint hidden">You must agree to the volunteer code of conduct</p>
+            </div>
+          </fieldset>
 
           {/* Submit Button */}
           <button
@@ -242,7 +328,7 @@ export default function RegisterPage() {
           >
             {submitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="loading loading-spinner loading-xs"></span>
                 <span>Creating Account...</span>
               </>
             ) : (
@@ -254,12 +340,9 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        {/* Divider */}
-        <div className="relative flex items-center justify-center">
-          <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
-          <span className="bg-white dark:bg-slate-900 px-3 text-xs uppercase tracking-wider text-slate-400 font-semibold absolute">
-            Or register with
-          </span>
+        {/* DaisyUI Divider Component */}
+        <div className="divider text-xs uppercase tracking-wider text-slate-400 font-semibold my-2">
+          Or register with
         </div>
 
         {/* Google Signup Button */}
@@ -271,7 +354,7 @@ export default function RegisterPage() {
             className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors text-sm font-semibold shadow-sm"
           >
             {googleSubmitting ? (
-              <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+              <span className="loading loading-spinner loading-xs text-primary"></span>
             ) : (
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -301,12 +384,13 @@ export default function RegisterPage() {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1"
+            className="link link-primary link-hover font-bold inline-flex items-center gap-1"
           >
             <span>Login here</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </p>
+      </div>
       </div>
     </div>
   );

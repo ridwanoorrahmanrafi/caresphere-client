@@ -1,6 +1,7 @@
 # CareSphere - Community-Driven Social Development Events Platform
 
-> **Live Website URL:** [https://caresphere-events.vercel.app](https://caresphere-events.vercel.app) *(Replace with your deployed Vercel live URL)*
+> **Live Website URL:** [https://caresphere-client.vercel.app](https://caresphere-client.vercel.app)
+> **Backend API URL:** [https://caresphere-server.vercel.app](https://caresphere-server.vercel.app)
 
 CareSphere is a modern, responsive web application empowering citizens and local organizations to organize, discover, and join grassroots community service initiatives across Bangladesh and beyond.
 

@@ -8,6 +8,7 @@ import { SocialEvent } from "../../types";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import {
+  Home,
   ListOrdered,
   Calendar,
   MapPin,
@@ -16,11 +17,12 @@ import {
   ExternalLink,
   PlusCircle,
   X,
-  Loader2,
   AlertTriangle,
+  Layers,
+  Sparkles,
+  Filter,
 } from "lucide-react";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+import { API_BASE_URL } from "@/config/api";
 
 const EVENT_TYPES = [
   "Donation Drive",
@@ -39,6 +41,9 @@ export default function ManageEventsPage() {
   const [events, setEvents] = useState<SocialEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [minDate, setMinDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedFilterType, setSelectedFilterType] = useState("All");
+  const EVENTS_PER_PAGE = 5;
 
   useEffect(() => {
     const tomorrow = new Date();
@@ -55,6 +60,14 @@ export default function ManageEventsPage() {
   const [editLocation, setEditLocation] = useState("");
   const [editDate, setEditDate] = useState("");
   const [updating, setUpdating] = useState(false);
+
+  const filteredEvents = selectedFilterType === "All"
+    ? events
+    : events.filter((e) => e.eventType === selectedFilterType);
+
+  const totalPages = Math.ceil(filteredEvents.length / EVENTS_PER_PAGE) || 1;
+  const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
+  const paginatedEvents = filteredEvents.slice(startIndex, startIndex + EVENTS_PER_PAGE);
 
   const fetchManagedEvents = async () => {
     try {
@@ -95,7 +108,34 @@ export default function ManageEventsPage() {
     setEditingEvent(null);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && editingEvent) {
+        closeEditModal();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [editingEvent]);
+
   // Handle Update Submit
+  const handleEditThumbnailFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("File size exceeds 2MB limit.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setEditThumbnail(reader.result);
+        toast.success("Updated banner image loaded!");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingEvent) return;
@@ -175,152 +215,410 @@ export default function ManageEventsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-              <ListOrdered className="w-3.5 h-3.5" />
-              <span>Organizer Management</span>
-            </div>
-            <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-              Manage Your Events
-            </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              You can only view, edit, and delete events created by your account ({user?.email})
-            </p>
+      {/* DaisyUI Drawer Component for Organizer Tools & Navigation */}
+      <div className="drawer">
+        <input id="organizer-tools-drawer" type="checkbox" className="drawer-toggle" />
+
+        {/* DaisyUI Drawer Content: Primary Manage Events View */}
+        <div className="drawer-content py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          {/* DaisyUI Breadcrumbs */}
+          <div className="breadcrumbs text-sm text-slate-500 dark:text-slate-400">
+            <ul>
+              <li>
+                <Link href="/" className="inline-flex items-center gap-1.5 hover:text-emerald-600 dark:hover:text-emerald-400">
+                  <Home className="w-4 h-4" />
+                  <span>Home</span>
+                </Link>
+              </li>
+              <li className="font-semibold text-slate-900 dark:text-white">
+                Manage Events
+              </li>
+            </ul>
           </div>
 
-          <Link
-            href="/create-event"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-md shadow-emerald-500/20 shrink-0 self-start sm:self-auto"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>Create New Event</span>
-          </Link>
+          {/* Page Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+                <ListOrdered className="w-3.5 h-3.5" />
+                <span>Organizer Management</span>
+              </div>
+              <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Manage Your Events
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                You can only view, edit, and delete events created by your account ({user?.email})
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-auto">
+              {/* DaisyUI Drawer Button Trigger */}
+              <label
+                htmlFor="organizer-tools-drawer"
+                className="btn btn-outline btn-sm drawer-button flex items-center gap-1.5 rounded-xl cursor-pointer"
+              >
+                <Filter className="w-4 h-4 text-emerald-600" />
+                <span>Organizer Tools</span>
+              </label>
+
+              <Link
+                href="/create-event"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-md shadow-emerald-500/20"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Create Event</span>
+              </Link>
+            </div>
+          </div>
+
+        {/* DaisyUI Alert Component: Security Perimeter Notice */}
+        <div role="alert" className="alert alert-info alert-soft alert-vertical sm:alert-horizontal shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6 text-sky-500">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div className="flex-1">
+            <h4 className="font-bold text-xs uppercase tracking-wider text-sky-800 dark:text-sky-300">
+              Organizer Security Perimeter
+            </h4>
+            <div className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
+              You are signed in as <span className="font-semibold text-slate-900 dark:text-white">{user?.email}</span>. You have verified rights to view, edit, and manage your hosted initiatives.
+            </div>
+          </div>
+          <div className="shrink-0 flex items-center gap-2">
+            <span className="badge badge-sm badge-success font-semibold">Active</span>
+          </div>
         </div>
 
         {/* Content Table / Cards */}
         {loading ? (
-          <div className="space-y-4 animate-pulse">
+          <div className="space-y-4">
+            <div className="flex items-center justify-center gap-3 py-6">
+              <span className="loading loading-bars loading-md text-primary" />
+              <span className="skeleton skeleton-text text-sm font-semibold">
+                Loading your managed events...
+              </span>
+            </div>
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="h-24 w-full rounded-2xl skeleton-shimmer bg-slate-200 dark:bg-slate-800"
+                className="skeleton h-24 w-full rounded-2xl"
               />
             ))}
           </div>
         ) : events.length > 0 ? (
-          <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 text-xs font-bold uppercase tracking-wider text-slate-400">
-                  <tr>
-                    <th className="py-4 px-6">Event</th>
-                    <th className="py-4 px-6">Type</th>
-                    <th className="py-4 px-6">Scheduled Date</th>
-                    <th className="py-4 px-6">Location</th>
-                    <th className="py-4 px-6 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {events.map((event) => (
-                    <tr
-                      key={event._id}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors"
-                    >
-                      {/* Event thumbnail + title */}
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={event.thumbnail}
-                            alt={event.title}
-                            className="w-14 h-14 rounded-xl object-cover shrink-0 border border-slate-200 dark:border-slate-700"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src =
-                                "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=200&q=80";
-                            }}
-                          />
-                          <div className="max-w-xs">
-                            <p className="font-bold text-slate-900 dark:text-white line-clamp-1">
-                              {event.title}
-                            </p>
-                            <Link
-                              href={`/events/${event._id}`}
-                              className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 mt-0.5"
-                            >
-                              <span>Public Page</span>
-                              <ExternalLink className="w-3 h-3" />
-                            </Link>
-                          </div>
-                        </div>
-                      </td>
+          <div className="space-y-6">
+            {/* DaisyUI Stat Primitives: Organizer Activity Overview */}
+            <div className="stats stats-vertical sm:stats-horizontal shadow-sm w-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
+              <div className="stat py-4 px-6">
+                <div className="stat-figure text-emerald-600 dark:text-emerald-400">
+                  <Calendar className="w-7 h-7 opacity-80" />
+                </div>
+                <div className="stat-title text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Total Hosted Events
+                </div>
+                <div className="stat-value text-2xl font-black text-slate-900 dark:text-white">
+                  {events.length}
+                </div>
+                <div className="stat-desc text-xs text-slate-500">
+                  Active campaigns organized
+                </div>
+                <progress
+                  className="progress progress-primary w-full h-1.5 mt-2"
+                  value={Math.min(100, events.length * 20)}
+                  max="100"
+                ></progress>
+              </div>
 
-                      {/* Event Type */}
-                      <td className="py-4 px-6 whitespace-nowrap">
-                        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-                          {event.eventType}
-                        </span>
-                      </td>
+              <div className="stat py-4 px-6">
+                <div className="stat-figure">
+                  <div
+                    className="radial-progress text-secondary font-bold text-[10px]"
+                    style={{
+                      "--value": Math.min(100, Math.round((new Set(events.map((e) => e.eventType)).size / 8) * 100)),
+                      "--size": "2.75rem",
+                      "--thickness": "3px",
+                    } as React.CSSProperties}
+                    role="progressbar"
+                    aria-valuenow={Math.min(100, Math.round((new Set(events.map((e) => e.eventType)).size / 8) * 100))}
+                  >
+                    {Math.min(100, Math.round((new Set(events.map((e) => e.eventType)).size / 8) * 100))}%
+                  </div>
+                </div>
+                <div className="stat-title text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Categories Covered
+                </div>
+                <div className="stat-value text-2xl font-black text-slate-900 dark:text-white">
+                  {new Set(events.map((e) => e.eventType)).size}
+                </div>
+                <div className="stat-desc text-xs text-slate-500">
+                  Unique welfare sectors
+                </div>
+                <progress
+                  className="progress progress-secondary w-full h-1.5 mt-2"
+                  value={Math.min(100, Math.round((new Set(events.map((e) => e.eventType)).size / 8) * 100))}
+                  max="100"
+                ></progress>
+              </div>
 
-                      {/* Scheduled Date */}
-                      <td className="py-4 px-6 whitespace-nowrap text-slate-600 dark:text-slate-300">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="w-3.5 h-3.5 text-emerald-500" />
-                          <span>{event.eventDate}</span>
-                        </div>
-                      </td>
+              <div className="stat py-4 px-6">
+                <div className="stat-figure">
+                  <div
+                    className="radial-progress text-success font-bold text-[10px]"
+                    style={{
+                      "--value": 100,
+                      "--size": "2.75rem",
+                      "--thickness": "3px",
+                    } as React.CSSProperties}
+                    role="progressbar"
+                    aria-valuenow={100}
+                  >
+                    100%
+                  </div>
+                </div>
+                <div className="stat-title text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Organizer Status
+                </div>
+                <div className="stat-value text-2xl font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                  <span className="status status-sm status-success"></span>
+                  <span>Verified</span>
+                </div>
+                <div className="stat-desc text-xs text-slate-500">
+                  Full CRUD permissions enabled
+                </div>
+                <progress
+                  className="progress progress-success w-full h-1.5 mt-2"
+                  value="100"
+                  max="100"
+                ></progress>
+              </div>
+            </div>
 
-                      {/* Location */}
-                      <td className="py-4 px-6 whitespace-nowrap text-slate-600 dark:text-slate-300">
-                        <div className="flex items-center gap-1.5 max-w-xs truncate">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span className="truncate">{event.location}</span>
-                        </div>
-                      </td>
+            {/* DaisyUI Filter Component (without HTML Form using .filter-reset) */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  Filter by Category:
+                </span>
+              </div>
 
-                      {/* Actions: Update & Delete */}
-                      <td className="py-4 px-6 text-right whitespace-nowrap">
-                        <div className="inline-flex items-center gap-2">
-                          <button
-                            onClick={() => openEditModal(event)}
-                            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700 transition-colors"
-                            title="Edit Event"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(event._id, event.title)}
-                            className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 transition-colors"
-                            title="Delete Event"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
+              <div className="filter flex-wrap">
+                <input
+                  className="btn filter-reset btn-xs sm:btn-sm"
+                  type="radio"
+                  name="manage-events-filter"
+                  aria-label="All"
+                  checked={selectedFilterType === "All"}
+                  onChange={() => {
+                    setSelectedFilterType("All");
+                    setCurrentPage(1);
+                  }}
+                />
+                {EVENT_TYPES.map((type) => (
+                  <input
+                    key={type}
+                    className="btn btn-xs sm:btn-sm btn-outline text-xs"
+                    type="radio"
+                    name="manage-events-filter"
+                    checked={selectedFilterType === type}
+                    onChange={() => {
+                      setSelectedFilterType(type);
+                      setCurrentPage(1);
+                    }}
+                    aria-label={type}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* DaisyUI Window Mockup Component: Organizer Management Console Window */}
+            <div className="mockup-window border border-base-300 bg-base-100 shadow-xl overflow-hidden">
+              <div className="border-t border-base-300 overflow-x-auto">
+                <table className="table table-zebra table-md w-full">
+                  <thead className="bg-slate-50/80 dark:bg-slate-850/80 text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                    <tr>
+                      <th className="w-12">
+                        <label className="cursor-pointer flex items-center">
+                          <input type="checkbox" className="checkbox checkbox-primary checkbox-xs" title="Select all" />
+                        </label>
+                      </th>
+                      <th>Event</th>
+                      <th>Type</th>
+                      <th>Scheduled Date</th>
+                      <th>Location</th>
+                      <th className="text-right">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {paginatedEvents.map((event) => (
+                      <tr
+                        key={event._id}
+                        className="hover:bg-slate-100/60 dark:hover:bg-slate-800/50 transition-colors"
+                      >
+                        <td>
+                          <label className="cursor-pointer flex items-center">
+                            <input type="checkbox" className="checkbox checkbox-primary checkbox-xs" />
+                          </label>
+                        </td>
+                        {/* Event thumbnail + title with DaisyUI Avatar */}
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <div className="avatar">
+                              <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+                                <img
+                                  src={event.thumbnail}
+                                  alt={event.title}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src =
+                                      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=200&q=80";
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            <div className="max-w-xs">
+                              <p className="font-bold text-slate-900 dark:text-white line-clamp-1">
+                                {event.title}
+                              </p>
+                              <Link
+                                href={`/events/${event._id}`}
+                                className="link link-primary link-hover text-xs inline-flex items-center gap-1 mt-0.5"
+                              >
+                                <span>Public Page</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </Link>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Event Type with DaisyUI Badge */}
+                        <td className="whitespace-nowrap">
+                          <span className="badge badge-sm badge-soft badge-primary font-semibold">
+                            {event.eventType}
+                          </span>
+                        </td>
+
+                        {/* Scheduled Date */}
+                        <td className="whitespace-nowrap text-slate-600 dark:text-slate-300">
+                          <div className="flex items-center gap-1.5 font-medium">
+                            <Calendar className="w-3.5 h-3.5 text-emerald-500" />
+                            <span>{event.eventDate}</span>
+                          </div>
+                        </td>
+
+                        {/* Location */}
+                        <td className="whitespace-nowrap text-slate-600 dark:text-slate-300">
+                          <div className="flex items-center gap-1.5 max-w-xs truncate">
+                            <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            <span className="truncate">{event.location}</span>
+                          </div>
+                        </td>
+
+                        {/* Actions: Update & Delete */}
+                        <td className="text-right whitespace-nowrap">
+                          <div className="inline-flex items-center gap-2">
+                            <button
+                              onClick={() => openEditModal(event)}
+                              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700 transition-colors"
+                              title="Edit Event"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(event._id, event.title)}
+                              className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 transition-colors"
+                              title="Delete Event"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot className="bg-slate-50/60 dark:bg-slate-850/60 text-xs font-bold uppercase tracking-wider text-slate-400 border-t border-slate-200 dark:border-slate-800">
+                    <tr>
+                      <th>
+                        <label className="cursor-pointer flex items-center">
+                          <input type="checkbox" className="checkbox checkbox-primary checkbox-xs" />
+                        </label>
+                      </th>
+                      <th>Event</th>
+                      <th>Type</th>
+                      <th>Scheduled Date</th>
+                      <th>Location</th>
+                      <th className="text-right">Actions</th>
+                    </tr>
+                  </tfoot>
+                </table>
+
+                {/* DaisyUI Pagination for Manage Events (using join & join-item btn) */}
+                {totalPages > 1 && (
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+                    <p className="text-xs text-slate-500 font-medium">
+                      Showing <span className="font-bold text-slate-900 dark:text-white">{startIndex + 1}</span> to{" "}
+                      <span className="font-bold text-slate-900 dark:text-white">
+                        {Math.min(startIndex + EVENTS_PER_PAGE, filteredEvents.length)}
+                      </span>{" "}
+                      of <span className="font-bold text-slate-900 dark:text-white">{filteredEvents.length}</span> events
+                    </p>
+
+                    <div className="join">
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="join-item btn btn-xs sm:btn-sm btn-outline disabled:opacity-40"
+                        title="Previous Page"
+                      >
+                        «
+                      </button>
+
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                        <button
+                          key={pageNumber}
+                          onClick={() => setCurrentPage(pageNumber)}
+                          className={`join-item btn btn-xs sm:btn-sm ${
+                            currentPage === pageNumber ? "btn-active" : "btn-outline"
+                          }`}
+                        >
+                          {pageNumber}
+                        </button>
+                      ))}
+
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className="join-item btn btn-xs sm:btn-sm btn-outline disabled:opacity-40"
+                        title="Next Page"
+                      >
+                        »
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         ) : (
-          <div className="text-center py-20 px-4 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 max-w-xl mx-auto space-y-4">
-            <AlertTriangle className="w-12 h-12 text-slate-400 mx-auto" />
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-              No Events Created Yet
-            </h3>
-            <p className="text-sm text-slate-500">
-              You haven&apos;t created any social service events under this account. Host an initiative
-              today to mobilize volunteers!
-            </p>
-            <Link
-              href="/create-event"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Create Your First Event</span>
-            </Link>
+          /* DaisyUI Window Mockup: Empty State OS Window */
+          <div className="mockup-window border border-base-300 bg-base-100 max-w-xl mx-auto shadow-sm">
+            <div className="grid place-content-center border-t border-base-300 p-8 sm:p-12 text-center space-y-4">
+              <AlertTriangle className="w-10 h-10 text-amber-500 mx-auto" />
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">No Events Created Yet</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">
+                  You haven&apos;t created any social service events under this account yet. Host an initiative
+                  today to mobilize volunteers across Bangladesh!
+                </p>
+              </div>
+              <Link
+                href="/create-event"
+                className="btn btn-sm btn-primary inline-flex items-center gap-2 mx-auto"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Create Your First Event</span>
+              </Link>
+            </div>
           </div>
         )}
 
@@ -329,7 +627,12 @@ export default function ManageEventsPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in">
             <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-full p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Update Event Data</h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">Update Event Data</h2>
+                  <span className="hidden sm:inline-flex items-center gap-1 text-xs text-slate-400">
+                    Press <kbd className="kbd kbd-xs">ESC</kbd> to close
+                  </span>
+                </div>
                 <button
                   onClick={closeEditModal}
                   className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -339,98 +642,134 @@ export default function ManageEventsPage() {
               </div>
 
               <form onSubmit={handleUpdate} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                    Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
+                <fieldset className="fieldset bg-slate-50/50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl p-4 gap-3.5">
+                  <legend className="fieldset-legend text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    Event Details
+                  </legend>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                      Event Type *
+                  {/* Title with DaisyUI Floating Label */}
+                  <div className="space-y-1">
+                    <label className="floating-label">
+                      <span>Event Title *</span>
+                      <input
+                        type="text"
+                        required
+                        minLength={5}
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="input input-sm input-primary validator w-full"
+                      />
                     </label>
-                    <select
-                      value={editType}
-                      onChange={(e) => setEditType(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                      {EVENT_TYPES.map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
+                    <p className="validator-hint hidden">Event title must be at least 5 characters</p>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                      Event Date (Future Date) *
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      min={minDate}
-                      value={editDate}
-                      onChange={(e) => setEditDate(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* DaisyUI Label for Select Component */}
+                    <div className="space-y-1">
+                      <span className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                        Event Type *
+                      </span>
+                      <label className="select select-sm select-primary w-full">
+                        <span className="label font-semibold">Type</span>
+                        <select
+                          value={editType}
+                          onChange={(e) => setEditType(e.target.value)}
+                          className="cursor-pointer"
+                        >
+                          {EVENT_TYPES.map((t) => (
+                            <option key={t} value={t}>
+                              {t}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+
+                    {/* DaisyUI Label for Date Input Component */}
+                    <div className="space-y-1">
+                      <span className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                        Event Date *
+                      </span>
+                      <label className="input input-sm input-primary w-full">
+                        <span className="label font-semibold">Date</span>
+                        <input
+                          type="date"
+                          required
+                          min={minDate}
+                          value={editDate}
+                          onChange={(e) => setEditDate(e.target.value)}
+                        />
+                      </label>
+                    </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                      Location *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={editLocation}
-                      onChange={(e) => setEditLocation(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="floating-label">
+                        <span>Location *</span>
+                        <input
+                          type="text"
+                          required
+                          minLength={3}
+                          value={editLocation}
+                          onChange={(e) => setEditLocation(e.target.value)}
+                          className="input input-sm input-primary validator w-full"
+                        />
+                      </label>
+                      <p className="validator-hint hidden">Please enter a valid location</p>
+                    </div>
+
+                    <div>
+                      <span className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                        Thumbnail Image *
+                      </span>
+                      <div className="space-y-1.5">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleEditThumbnailFileChange}
+                          className="file-input file-input-primary file-input-xs sm:file-input-sm w-full"
+                        />
+                        <label className="input input-xs sm:input-sm input-primary w-full flex items-center gap-2">
+                          <input
+                            type="url"
+                            value={editThumbnail}
+                            onChange={(e) => setEditThumbnail(e.target.value)}
+                            placeholder="Or paste banner image URL"
+                            className="grow"
+                          />
+                        </label>
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                      Thumbnail Image URL *
+                  {/* Description with DaisyUI Floating Label */}
+                  <div className="space-y-1">
+                    <label className="floating-label">
+                      <span>Event Description *</span>
+                      <textarea
+                        required
+                        rows={4}
+                        value={editDescription}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                        className="textarea textarea-sm textarea-primary w-full resize-y"
+                      />
                     </label>
-                    <input
-                      type="url"
-                      required
-                      value={editThumbnail}
-                      onChange={(e) => setEditThumbnail(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                    Description *
-                  </label>
-                  <textarea
-                    required
-                    rows={4}
-                    value={editDescription}
-                    onChange={(e) => setEditDescription(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
+                  <p className="label text-[11px] text-slate-500 dark:text-slate-400">
+                    Modifications will be immediately reflected in the public event feed and volunteer registrations.
+                  </p>
+                </fieldset>
 
-                <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                {/* DaisyUI Divider Component */}
+                <div className="divider my-1"></div>
+
+                <div className="flex items-center justify-end gap-3 pt-1">
                   <button
                     type="button"
                     onClick={closeEditModal}
-                    className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -441,7 +780,7 @@ export default function ManageEventsPage() {
                   >
                     {updating ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="loading loading-spinner loading-xs" />
                         <span>Saving Changes...</span>
                       </>
                     ) : (
@@ -449,10 +788,124 @@ export default function ManageEventsPage() {
                     )}
                   </button>
                 </div>
+                {updating && (
+                  <div className="pt-2">
+                    <progress className="progress progress-primary w-full h-1.5"></progress>
+                  </div>
+                )}
               </form>
             </div>
           </div>
         )}
+      </div>
+
+      {/* DaisyUI Drawer Side */}
+      <div className="drawer-side z-1002">
+        <label htmlFor="organizer-tools-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+        <aside className="p-6 w-80 min-h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-2xl">
+          <div className="space-y-6">
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+                  <ListOrdered className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Organizer Tools</h3>
+                  <p className="text-[11px] text-slate-400">Quick Filters & Dashboard</p>
+                </div>
+              </div>
+              <label
+                htmlFor="organizer-tools-drawer"
+                className="btn btn-ghost btn-circle btn-xs cursor-pointer"
+              >
+                <X className="w-4 h-4 text-slate-500" />
+              </label>
+            </div>
+
+            {/* Quick Category Filter List */}
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Filter by Category
+              </p>
+              <div className="space-y-1">
+                <button
+                  onClick={() => {
+                    setSelectedFilterType("All");
+                    setCurrentPage(1);
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
+                    selectedFilterType === "All"
+                      ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-bold"
+                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  <span>All Events</span>
+                  <span className="badge badge-xs badge-neutral">{events.length}</span>
+                </button>
+                {EVENT_TYPES.map((t) => {
+                  const count = events.filter((e) => e.eventType === t).length;
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => {
+                        setSelectedFilterType(t);
+                        setCurrentPage(1);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
+                        selectedFilterType === t
+                          ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-bold"
+                          : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      }`}
+                    >
+                      <span>{t}</span>
+                      {count > 0 && (
+                        <span className="badge badge-xs badge-primary">{count}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Quick Actions Menu */}
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Quick Actions
+              </p>
+              <ul className="menu menu-sm bg-slate-50 dark:bg-slate-800/40 rounded-xl p-1.5 border border-slate-200/60 dark:border-slate-800">
+                <li>
+                  <Link href="/create-event">
+                    <PlusCircle className="w-4 h-4 text-emerald-500" />
+                    <span>Host New Event</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/joined-events">
+                    <Calendar className="w-4 h-4 text-emerald-500" />
+                    <span>Joined Events</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/upcoming-events">
+                    <Sparkles className="w-4 h-4 text-emerald-500" />
+                    <span>Public Calendar</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+            <label
+              htmlFor="organizer-tools-drawer"
+              className="btn btn-sm btn-outline w-full cursor-pointer"
+            >
+              Close Drawer
+            </label>
+          </div>
+        </aside>
+      </div>
       </div>
     </ProtectedRoute>
   );

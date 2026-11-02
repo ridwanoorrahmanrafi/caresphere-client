@@ -5,14 +5,14 @@ import Link from "next/link";
 import Banner from "../components/Banner";
 import Features from "../components/Features";
 import Gallery from "../components/Gallery";
+import FAQ from "../components/FAQ";
 import Newsletter from "../components/Newsletter";
 import ImpactStats from "../components/ImpactStats";
 import EventCard from "../components/EventCard";
 import SkeletonCard from "../components/SkeletonCard";
 import { SocialEvent } from "../types";
 import { Calendar, ArrowRight, HeartHandshake } from "lucide-react";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+import { API_BASE_URL } from "@/config/api";
 
 export default function HomePage() {
   const [recentEvents, setRecentEvents] = useState<SocialEvent[]>([]);
@@ -69,19 +69,39 @@ export default function HomePage() {
 
           <Link
             href="/upcoming-events"
-            className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 group shrink-0"
+            className="link link-primary link-hover inline-flex items-center gap-2 text-sm font-bold group shrink-0"
           >
             <span>View All Upcoming Events</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
+        {/* DaisyUI Alert Component: Connection Warning */}
+        {error && !loading && (
+          <div role="alert" className="alert alert-warning alert-soft alert-vertical sm:alert-horizontal mb-6 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div className="text-xs">
+              <span className="font-bold">Server Notice:</span> {error}
+            </div>
+          </div>
+        )}
+
         {/* 2 or 3 Column Responsive Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
+          <div className="space-y-6">
+            <div className="flex items-center justify-center gap-2 py-4">
+              <span className="loading loading-infinity loading-lg text-primary" />
+              <span className="skeleton skeleton-text text-sm font-semibold">
+                Fetching latest community initiatives...
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
           </div>
         ) : recentEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -114,7 +134,10 @@ export default function HomePage() {
       {/* 5. Gallery Section */}
       <Gallery />
 
-      {/* 6. Newsletter Section */}
+      {/* 6. FAQ Section (DaisyUI Collapse Component) */}
+      <FAQ />
+
+      {/* 7. Newsletter Section */}
       <Newsletter />
     </div>
   );
