@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 import ProtectedRoute from "../../components/ProtectedRoute";
@@ -35,28 +35,37 @@ export default function JoinedEventsPage() {
       ? joinedEvents
       : joinedEvents.filter((j) => j.eventType === selectedType);
 
-  const fetchJoinedEvents = async () => {
+  const fetchJoinedEvents = useCallback(async (isInitial = false) => {
     try {
-      setLoading(true);
+      if (isInitial) setLoading(true);
       const res = await authFetch(`${API_BASE_URL}/events/joined`);
       const data = await res.json();
       if (data.success && Array.isArray(data.joinedEvents)) {
         setJoinedEvents(data.joinedEvents);
-      } else {
+      } else if (isInitial) {
         setJoinedEvents([]);
       }
     } catch (err) {
       console.error("Failed to fetch joined events:", err);
     } finally {
-      setLoading(false);
+      if (isInitial) {
+        setLoading(false);
+      }
     }
-  };
+  }, [authFetch]);
 
   useEffect(() => {
     if (user) {
-      fetchJoinedEvents();
+      fetchJoinedEvents(true);
+
+      // Real-time synchronization poll every 5 seconds
+      const interval = setInterval(() => {
+        fetchJoinedEvents(false);
+      }, 5000);
+
+      return () => clearInterval(interval);
     }
-  }, [user]);
+  }, [user, fetchJoinedEvents]);
 
   const handleCancelRsvp = async (eventId: string, title: string) => {
     const result = await Swal.fire({

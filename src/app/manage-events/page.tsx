@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 import ProtectedRoute from "../../components/ProtectedRoute";
@@ -69,28 +69,37 @@ export default function ManageEventsPage() {
   const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
   const paginatedEvents = filteredEvents.slice(startIndex, startIndex + EVENTS_PER_PAGE);
 
-  const fetchManagedEvents = async () => {
+  const fetchManagedEvents = useCallback(async (isInitial = false) => {
     try {
-      setLoading(true);
+      if (isInitial) setLoading(true);
       const res = await authFetch(`${API_BASE_URL}/events/manage`);
       const data = await res.json();
       if (data.success && Array.isArray(data.events)) {
         setEvents(data.events);
-      } else {
+      } else if (isInitial) {
         setEvents([]);
       }
     } catch (err) {
       console.error("Error loading managed events:", err);
     } finally {
-      setLoading(false);
+      if (isInitial) {
+        setLoading(false);
+      }
     }
-  };
+  }, [authFetch]);
 
   useEffect(() => {
     if (user) {
-      fetchManagedEvents();
+      fetchManagedEvents(true);
+
+      // Real-time synchronization poll every 5 seconds
+      const interval = setInterval(() => {
+        fetchManagedEvents(false);
+      }, 5000);
+
+      return () => clearInterval(interval);
     }
-  }, [user]);
+  }, [user, fetchManagedEvents]);
 
   // Open Update Modal
   const openEditModal = (event: SocialEvent) => {

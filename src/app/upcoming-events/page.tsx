@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import EventCard from "../../components/EventCard";
 import SkeletonCard from "../../components/SkeletonCard";
 import { SocialEvent } from "../../types";
@@ -45,9 +45,9 @@ export default function UpcomingEventsPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async (isInitial = false) => {
     try {
-      setLoading(true);
+      if (isInitial) setLoading(true);
       const params = new URLSearchParams();
       if (searchQuery.trim()) {
         params.append("search", searchQuery.trim());
@@ -72,18 +72,26 @@ export default function UpcomingEventsPage() {
       }
     } catch (err) {
       console.error("Failed to load upcoming events:", err);
-      setEvents([]);
+      if (isInitial) setEvents([]);
     } finally {
-      setLoading(false);
+      if (isInitial) setLoading(false);
     }
-  };
+  }, [searchQuery, selectedCategory]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchEvents();
+      fetchEvents(true);
     }, 250);
     return () => clearTimeout(timer);
-  }, [searchQuery, selectedCategory]);
+  }, [fetchEvents]);
+
+  // Real-time synchronization poll: refresh upcoming initiatives every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchEvents(false);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [fetchEvents]);
 
   return (
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">

@@ -22,11 +22,14 @@ const eventTypeColors: Record<string, string> = {
 };
 
 export default function EventCard({ event }: EventCardProps) {
-  const formattedDate = new Date(event.eventDate).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const dateObj = new Date(event.eventDate);
+  const formattedDate = !isNaN(dateObj.getTime())
+    ? dateObj.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : event.eventDate;
 
   const badgeStyle =
     eventTypeColors[event.eventType] ||

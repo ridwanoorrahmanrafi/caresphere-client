@@ -20,26 +20,36 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchRecentEvents() {
+    async function fetchRecentEvents(isInitial = false) {
       try {
-        setLoading(true);
+        if (isInitial) setLoading(true);
         // Requirement: Show 6 recent upcoming events using .limit() operator of MongoDB
         const res = await fetch(`${API_BASE_URL}/events/upcoming?limit=6`);
         const data = await res.json();
         if (data.success && Array.isArray(data.events)) {
           setRecentEvents(data.events);
-        } else {
+          setError(null);
+        } else if (isInitial) {
           setError(data.message || "Failed to load events");
         }
       } catch (err: any) {
-        console.warn("Could not fetch events from server:", err.message);
-        setError("Connecting to server...");
+        if (isInitial) {
+          console.warn("Could not fetch events from server:", err.message);
+          setError("Connecting to server...");
+        }
       } finally {
-        setLoading(false);
+        if (isInitial) setLoading(false);
       }
     }
 
-    fetchRecentEvents();
+    fetchRecentEvents(true);
+
+    // Real-time synchronization poll every 5 seconds
+    const interval = setInterval(() => {
+      fetchRecentEvents(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (

@@ -28,7 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={plusJakarta.variable} suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col antialiased font-sans selection:bg-indigo-600 selection:text-white">
+      <body className={`${plusJakarta.className} min-h-screen flex flex-col antialiased selection:bg-indigo-600 selection:text-white`}>
         <ThemeProvider>
           <AuthProvider>
             <Toaster

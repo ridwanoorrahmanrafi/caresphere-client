@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../../context/AuthContext";
@@ -50,47 +50,76 @@ export default function EventDetailsPage() {
   const [joining, setJoining] = useState(false);
   const [activeTab, setActiveTab] = useState<"roadmap" | "volunteers">("roadmap");
 
-  useEffect(() => {
-    async function fetchEventDetails() {
-      try {
-        setLoading(true);
-        const res = await fetch(`${API_BASE_URL}/events/${eventId}`);
-        const data = await res.json();
+  const fetchEventDetails = useCallback(async (isInitial = false) => {
+    try {
+      if (isInitial) setLoading(true);
+      const token = typeof window !== "undefined" ? localStorage.getItem("caresphere_token") : null;
+      const headers: HeadersInit = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
 
-        if (data.success && data.event) {
-          setEvent(data.event);
-          setAttendeesCount(data.event.attendeesCount || 0);
+      const res = await fetch(`${API_BASE_URL}/events/${eventId}`, { headers });
+      const data = await res.json();
 
-          // Check if current logged in user has already joined
-          if (Array.isArray(data.event.attendees)) {
-            setAttendees(data.event.attendees);
-            if (user?.email) {
-              const joined = data.event.attendees.some(
-                (a: Attendee) => a.userEmail === user.email
-              );
-              setIsJoined(joined);
-            }
-          }
-        } else {
-          toast.error(data.message || "Failed to load event details");
-        }
-      } catch (err) {
+      if (data.success && data.event) {
+        setEvent(data.event);
+
+        // Parse verified attendee count from either data.attendeesCount or data.event.attendeesCount
+        const count = typeof data.attendeesCount === "number"
+          ? data.attendeesCount
+          : (typeof data.event.attendeesCount === "number" ? data.event.attendeesCount : 0);
+        setAttendeesCount(count);
+
+        // Parse attendees roster from either data.attendees or data.event.attendees
+        const attendeesList: Attendee[] = Array.isArray(data.attendees)
+          ? data.attendees
+          : (Array.isArray(data.event.attendees) ? data.event.attendees : []);
+        setAttendees(attendeesList);
+
+        // Robust membership resolution: checks server flag and roster email match
+        const userEmailLower = user?.email?.toLowerCase();
+        const foundInRoster = userEmailLower
+          ? attendeesList.some((a) => a.userEmail?.toLowerCase() === userEmailLower)
+          : false;
+        const joined = Boolean(data.isUserJoined) || foundInRoster;
+        setIsJoined(joined);
+      } else if (isInitial) {
+        toast.error(data.message || "Failed to load event details");
+      }
+    } catch (err) {
+      if (isInitial) {
         console.error("Fetch event details error:", err);
         toast.error("Network error while loading event details");
-      } finally {
+      }
+    } finally {
+      if (isInitial) {
         setLoading(false);
       }
     }
-
-    if (eventId) {
-      fetchEventDetails();
-    }
   }, [eventId, user?.email]);
+
+  useEffect(() => {
+    if (!eventId) return;
+    fetchEventDetails(true);
+
+    // Real-time synchronization poll: refresh event details and attendees every 3.5 seconds
+    const interval = setInterval(() => {
+      fetchEventDetails(false);
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [eventId, fetchEventDetails]);
 
   const handleJoinEvent = async () => {
     if (!user) {
       toast("Please login first to volunteer for this event", { icon: "🔐" });
       router.push(`/login?redirect=/events/${eventId}`);
+      return;
+    }
+
+    if (isJoined) {
+      toast("You have already joined this event!", { icon: "✅" });
       return;
     }
 
@@ -103,10 +132,29 @@ export default function EventDetailsPage() {
 
       if (data.success) {
         setIsJoined(true);
-        setAttendeesCount((prev) => prev + 1);
-        if (data.attendee) {
-          setAttendees((prev) => [...prev, data.attendee]);
+        if (typeof data.attendeesCount === "number") {
+          setAttendeesCount(data.attendeesCount);
+        } else {
+          setAttendeesCount((prev) => prev + 1);
         }
+
+        const newAttendee: Attendee = data.attendee || (data.joinRecord ? {
+          userName: data.joinRecord.userName,
+          userEmail: data.joinRecord.userEmail,
+          userPhoto: data.joinRecord.userPhoto,
+          joinedAt: data.joinRecord.joinedAt,
+        } : {
+          userName: user.name || "Volunteer",
+          userEmail: user.email,
+          userPhoto: user.photoURL || "",
+          joinedAt: new Date().toISOString(),
+        });
+
+        setAttendees((prev) => {
+          const exists = prev.some((a) => a.userEmail?.toLowerCase() === newAttendee.userEmail?.toLowerCase());
+          return exists ? prev : [...prev, newAttendee];
+        });
+
         confetti({
           particleCount: 80,
           spread: 70,
@@ -114,8 +162,15 @@ export default function EventDetailsPage() {
           colors: ["#4f46e5", "#7c3aed", "#6366f1", "#f59e0b", "#f43f5e"],
         });
         toast.success("RSVP Confirmed! You're officially registered as a volunteer.");
+        fetchEventDetails(false);
       } else {
-        toast.error(data.message || "Failed to join event.");
+        if (data.message?.toLowerCase().includes("already joined")) {
+          setIsJoined(true);
+          toast("You are already registered for this event!", { icon: "✅" });
+          fetchEventDetails(false);
+        } else {
+          toast.error(data.message || "Failed to join event.");
+        }
       }
     } catch (err: any) {
       toast.error(err.message || "An error occurred.");
@@ -148,9 +203,14 @@ export default function EventDetailsPage() {
 
         if (data.success) {
           setIsJoined(false);
-          setAttendeesCount((prev) => Math.max(0, prev - 1));
-          setAttendees((prev) => prev.filter((a) => a.userEmail !== user?.email));
+          if (typeof data.attendeesCount === "number") {
+            setAttendeesCount(data.attendeesCount);
+          } else {
+            setAttendeesCount((prev) => Math.max(0, prev - 1));
+          }
+          setAttendees((prev) => prev.filter((a) => a.userEmail?.toLowerCase() !== user?.email?.toLowerCase()));
           toast.success("RSVP cancelled.");
+          fetchEventDetails(false);
         } else {
           toast.error(data.message || "Failed to leave event.");
         }
@@ -286,12 +346,17 @@ export default function EventDetailsPage() {
               <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-bold">
                 <Calendar className="w-4 h-4" />
                 <span>
-                  {new Date(event.eventDate).toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  {(() => {
+                    const d = new Date(event.eventDate);
+                    return !isNaN(d.getTime())
+                      ? d.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : event.eventDate;
+                  })()}
                 </span>
               </div>
               <span>•</span>
@@ -562,25 +627,32 @@ export default function EventDetailsPage() {
             {/* Action Buttons */}
             {isJoined ? (
               <div className="space-y-3 pt-2">
-                <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                  <div>
-                    <p className="text-xs font-bold text-indigo-900 dark:text-indigo-200">
-                      You&apos;re Attending!
-                    </p>
-                    <p className="text-[11px] text-indigo-700 dark:text-indigo-300">
-                      RSVP confirmed in CareSphere registry.
-                    </p>
-                  </div>
-                </div>
-
+                {/* Disabled "Joined" button satisfying requirement */}
                 <button
-                  onClick={handleLeaveEvent}
-                  disabled={joining}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-rose-200 dark:border-rose-900 transition-colors cursor-pointer"
+                  type="button"
+                  disabled
+                  className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl text-base font-bold text-white bg-emerald-600 dark:bg-emerald-600 shadow-md shadow-emerald-500/20 cursor-default opacity-95 select-none"
+                  title="You have already joined this event"
                 >
-                  Cancel My RSVP
+                  <CheckCircle2 className="w-5 h-5 text-white" />
+                  <span>Joined</span>
                 </button>
+
+                <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                    <span className="text-xs font-semibold text-indigo-900 dark:text-indigo-200 truncate">
+                      You are attending this event
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLeaveEvent}
+                    disabled={joining}
+                    className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 underline shrink-0 cursor-pointer"
+                  >
+                    Cancel RSVP
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="space-y-3 pt-2">

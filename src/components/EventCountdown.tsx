@@ -17,11 +17,12 @@ interface TimeLeft {
 }
 
 function calculateTimeLeft(target: string | Date): TimeLeft {
-  const difference = new Date(target).getTime() - new Date().getTime();
-
-  if (difference <= 0) {
+  const targetTime = new Date(target).getTime();
+  if (isNaN(targetTime) || targetTime <= Date.now()) {
     return { days: 0, hours: 0, minutes: 0, seconds: 0, isPast: true };
   }
+
+  const difference = targetTime - Date.now();
 
   return {
     days: Math.floor(difference / (1000 * 60 * 60 * 24)),

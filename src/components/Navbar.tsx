@@ -197,28 +197,37 @@ export default function Navbar() {
                         className={`dropdown dropdown-end relative ${dropdownOpen ? "dropdown-open" : ""}`}
                         ref={dropdownRef}
                       >
-                        <button
-                          tabIndex={0}
-                          role="button"
-                          onClick={() => setDropdownOpen(!dropdownOpen)}
-                          className="relative flex items-center p-0.5 rounded-full hover:ring-2 hover:ring-indigo-500/80 transition-all focus:outline-none"
-                          title={user.name || "User Profile"}
-                        >
-                          <div className="avatar indicator">
-                            <span className="indicator-item status status-success status-xs"></span>
-                            <div className="w-10 h-10 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 overflow-hidden">
-                              <img
-                                src={user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"}
-                                alt={user.name}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src =
-                                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80";
-                                }}
-                              />
+                        <div className="relative group">
+                          <button
+                            tabIndex={0}
+                            role="button"
+                            onClick={() => setDropdownOpen(!dropdownOpen)}
+                            className="relative flex items-center p-0.5 rounded-full hover:ring-2 hover:ring-indigo-500/80 transition-all focus:outline-none"
+                            title={user.name || "User Profile"}
+                          >
+                            <div className="avatar indicator">
+                              <span className="indicator-item status status-success status-xs"></span>
+                              <div className="w-10 h-10 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 overflow-hidden">
+                                <img
+                                  src={user.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"}
+                                  alt={user.name}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src =
+                                      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80";
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </button>
+                          </button>
+
+                          {/* Hover Tooltip displaying user's name */}
+                          {!dropdownOpen && (
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 shadow-lg z-50">
+                              {user.name || "Volunteer"}
+                            </div>
+                          )}
+                        </div>
 
                         {/* Dropdown Menu */}
                         {dropdownOpen && (
